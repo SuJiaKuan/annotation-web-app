@@ -1,17 +1,23 @@
 import React from 'react'
-import { CounterContainer } from 'containers'
-import { Header } from 'components'
-import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 
-const Container = styled.div`text-align: center;`
+import { ProjectsPageContainer, DataPageContainer } from 'containers'
+import { Header, MainTabs } from 'components'
+
+const Container = styled.div``
 
 function Routes() {
   return (
     <Router>
       <Container>
         <Header />
-        <Route path="/" component={CounterContainer} />
+        <MainTabs />
+        <Switch>
+          <Route exact path='/' render={() => (<Redirect to='/projects' />)} />
+          <Route path='/projects' component={ProjectsPageContainer} />
+          <Route path='/data' component={DataPageContainer} />
+        </Switch>
       </Container>
     </Router>
   )
