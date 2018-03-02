@@ -7,21 +7,25 @@ import split from 'lodash/split'
 
 import Subheader from 'material-ui/Subheader'
 
-import { DatasetAdder, DatasetList, Link } from 'components'
+import { DatasetAdder, DatasetList, DatasetViewer, Link } from 'components'
 
 function DataPage({ datasetList, addDataset }) {
   const DataPath = withRouter(({ location }) => {
     let subPath = null
     const pathnames = split(location.pathname, '/')
 
-    if (pathnames.length > 2) {
+    if (pathnames.length > 2 && pathnames[2]) {
+      let label
+
       if (pathnames[2] === 'new') {
-        subPath = <Link to="/data/new">New</Link>
+        label = 'New'
       } else {
         const dataset = find(datasetList, { id: pathnames[2] })
 
-        subPath = <Link to={`/data/${dataset.id}`}>{dataset.name}</Link>
+        label = dataset ? dataset.name : 'Not Found'
       }
+
+      subPath = <Link to={location.pathname}>{label}</Link>
     }
 
     return (
@@ -41,7 +45,7 @@ function DataPage({ datasetList, addDataset }) {
         <DatasetAdder addDataset={addDataset} />
       </Route>
       <Route path="/data/:id">
-        <div>ID</div>
+        <DatasetViewer datasetList={datasetList} />
       </Route>
     </Switch>
   )
