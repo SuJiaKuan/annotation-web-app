@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { ProjectsPage } from 'components'
 import { createStructuredSelector, createSelector } from 'reselect'
 
@@ -8,21 +9,18 @@ import * as ProjectsActions from 'actions/projects'
 
 class ProjectsPageContainer extends React.Component {
   static propTypes = {
+    data: PropTypes.object.isRequired,
+    projects: PropTypes.object.isRequired,
   }
 
   render() {
-    return (
-      <ProjectsPage
-      />
-    )
+    return <ProjectsPage datasetList={this.props.data.datasetList} projectList={this.props.projects.projectList} />
   }
 }
 
 const mapStateToProps = createStructuredSelector({
-  counter: createSelector(
-    (state) => state.counter,
-    (counterState) => counterState
-  ),
+  data: createSelector(state => state.data, dataState => dataState),
+  projects: createSelector(state => state.projects, projectsState => projectsState),
 })
 
 function mapDispatchToProps(dispatch) {
