@@ -14,7 +14,7 @@ import NewDatasetIcon from 'material-ui/svg-icons/image/add-to-photos'
 import { Link } from 'components'
 
 const AdderAvatar = styled(Avatar)`
-  background-color: rgb(0, 188, 212) !important;
+  background-color: ${props => `${props.theme.color.primary} !important`};
 `
 
 function DatasetList({ datasetList }) {

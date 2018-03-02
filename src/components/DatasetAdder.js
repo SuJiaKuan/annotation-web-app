@@ -44,11 +44,11 @@ const StyledDropzone = styled(Dropzone)`
   width: 680px;
   height: 420px;
   border-width: 3px;
-  border-color: rgba(0, 188, 212, 0.5);
+  border-color: ${props => props.theme.color.primary};
   border-style: dashed;
   border-radius: 5px;
-  background-color: ${props => (props.dragged ? 'rgba(0, 188, 212, 0.1)' : 'inherit')};
-  transition: background-color 0.3s linear;
+  opacity: ${props => (props.dragged ? 0.3 : 1)};
+  transition: opacity 0.3s linear;
 `
 
 class DatasetAdder extends React.Component {
