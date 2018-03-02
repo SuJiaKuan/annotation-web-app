@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { DataPage } from 'components'
 import { createStructuredSelector, createSelector } from 'reselect'
 
@@ -8,21 +9,21 @@ import * as DataActions from 'actions/data'
 
 class DataPageContainer extends React.Component {
   static propTypes = {
+    data: PropTypes.object.isRequired,
+    addDataset: PropTypes.func.isRequired,
+  }
+
+  addDataset = params => {
+    this.props.addDataset(params)
   }
 
   render() {
-    return (
-      <DataPage
-      />
-    )
+    return <DataPage datasetList={this.props.data.datasetList} addDataset={this.addDataset} />
   }
 }
 
 const mapStateToProps = createStructuredSelector({
-  counter: createSelector(
-    (state) => state.counter,
-    (counterState) => counterState
-  ),
+  data: createSelector(state => state.data, dataState => dataState),
 })
 
 function mapDispatchToProps(dispatch) {

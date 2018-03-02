@@ -7,14 +7,8 @@ import map from 'lodash/map'
 import { BottomNavigation, BottomNavigationItem } from 'material-ui/BottomNavigation'
 import FontIcon from 'material-ui/FontIcon'
 
-const LABELS = [
-  'projects',
-  'data',
-]
-const ICONS = [
-  'style',
-  'image',
-]
+const LABELS = ['projects', 'data']
+const ICONS = ['style', 'image']
 
 class MainTabs extends React.Component {
   handleClick = (history, value) => {
@@ -23,12 +17,9 @@ class MainTabs extends React.Component {
 
   render() {
     const TabsWithRouter = withRouter(({ location, history }) => {
-      const selectedIndex = findIndex(LABELS, (label) => (
-        `/${label}` === location.pathname
-      ))
+      const selectedIndex = findIndex(LABELS, label => location.pathname.startsWith(`/${label}`))
       const bottomList = map(LABELS, (label, idx) => {
-        const icon =
-          <FontIcon className='material-icons'>{ICONS[idx]}</FontIcon>
+        const icon = <FontIcon className="material-icons">{ICONS[idx]}</FontIcon>
 
         return (
           <BottomNavigationItem
@@ -40,16 +31,10 @@ class MainTabs extends React.Component {
         )
       })
 
-      return (
-        <BottomNavigation selectedIndex={selectedIndex}>
-          {bottomList}
-        </BottomNavigation>
-      )
+      return <BottomNavigation selectedIndex={selectedIndex}>{bottomList}</BottomNavigation>
     })
 
-    return (
-      <TabsWithRouter />
-    )
+    return <TabsWithRouter />
   }
 }
 
