@@ -11,10 +11,21 @@ class ProjectsPageContainer extends React.Component {
   static propTypes = {
     data: PropTypes.object.isRequired,
     projects: PropTypes.object.isRequired,
+    addProject: PropTypes.func.isRequired,
+  }
+
+  addProject = params => {
+    this.props.addProject(params)
   }
 
   render() {
-    return <ProjectsPage datasetList={this.props.data.datasetList} projectList={this.props.projects.projectList} />
+    return (
+      <ProjectsPage
+        datasetList={this.props.data.datasetList}
+        projectList={this.props.projects.projectList}
+        addProject={this.addProject}
+      />
+    )
   }
 }
 

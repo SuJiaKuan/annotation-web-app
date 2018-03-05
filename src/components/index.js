@@ -2,6 +2,7 @@ export { default as Header } from './Header'
 
 export { default as ProjectsPage } from './ProjectsPage'
 export { default as ProjectList } from './ProjectList'
+export { default as ProjectAdder } from './ProjectAdder'
 
 export { default as DataPage } from './DataPage'
 export { default as DatasetAdder } from './DatasetAdder'

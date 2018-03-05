@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom'
-import pure from 'recompose/pure'
 import styled from 'styled-components'
 
 const StyledLink = styled(Link)`
@@ -13,4 +12,4 @@ const StyledLink = styled(Link)`
   }
 `
 
-export default pure(StyledLink)
+export default StyledLink

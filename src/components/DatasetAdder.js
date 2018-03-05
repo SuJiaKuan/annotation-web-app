@@ -206,7 +206,7 @@ class DatasetAdder extends React.Component {
 
         <br />
         <HorizontalContainer>
-          <FlatButton label="black" disabled={stepIndex === 0} onClick={this.handlePrevBtnClick} />
+          <FlatButton label="Back" disabled={stepIndex === 0} onClick={this.handlePrevBtnClick} />
           {stepIndex < 2 && (
             <RaisedButton label="Next" primary={true} disabled={nextDisabled} onClick={this.handleNextBtnClick} />
           )}
