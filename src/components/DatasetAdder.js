@@ -86,6 +86,7 @@ class DatasetAdder extends React.Component {
     this.props.addDataset({
       name: this.state.datasetName,
       description: this.state.datasetDesc,
+      media: this.state.file,
     })
 
     history.push('/data')
