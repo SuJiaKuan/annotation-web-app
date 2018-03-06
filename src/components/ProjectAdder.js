@@ -187,7 +187,7 @@ class ProjectAdder extends React.Component {
 
     return (
       <div>
-        <p>Please select a more label type</p>
+        <p>Please select a label type</p>
         <RadioButtonGroup
           name="label type"
           valueSelcted={selectedType}

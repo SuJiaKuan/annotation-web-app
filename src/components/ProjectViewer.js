@@ -6,13 +6,10 @@ import styled from 'styled-components'
 import find from 'lodash/find'
 import map from 'lodash/map'
 
-import { Card, CardHeader, CardTitle, CardText } from 'material-ui/Card'
-import FlatButton from 'material-ui/FlatButton'
-import { GridList, GridTile } from 'material-ui/GridList'
+import { Card, CardTitle, CardText } from 'material-ui/Card'
 import RaisedButton from 'material-ui/RaisedButton'
 import Subheader from 'material-ui/Subheader'
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table'
-import ViewDatasetIcon from 'material-ui/svg-icons/navigation/arrow-forward'
 
 import { SUPPORTED_LABEL_TYPES } from 'constants/Projects'
 
