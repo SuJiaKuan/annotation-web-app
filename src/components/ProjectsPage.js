@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Route, Switch } from 'react-router-dom'
 
-import { ListNavigation, ProjectList, ProjectAdder } from 'components'
+import { ListNavigation, ProjectList, ProjectAdder, ProjectViewer } from 'components'
 
 function ProjectsPage({ datasetList, projectList, addProject }) {
   const Content = () => (
@@ -14,7 +14,7 @@ function ProjectsPage({ datasetList, projectList, addProject }) {
         <ProjectAdder datasetList={datasetList} addProject={addProject} />
       </Route>
       <Route path="/projects/:id">
-        <div>ID</div>
+        <ProjectViewer projectList={projectList} datasetList={datasetList} />
       </Route>
     </Switch>
   )
