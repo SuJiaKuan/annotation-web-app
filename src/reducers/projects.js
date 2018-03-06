@@ -4,26 +4,7 @@ import { ADD_PROJECT_REQUEST, ADD_PROJECT_SUCCESS, ADD_PROJECT_FAIL } from 'cons
 
 const initialState = {
   isFetch: false,
-  /*
   projectList: [],
-  */
-  projectList: [
-    {
-      id: 'jill1',
-      name: 'Jill Project 1',
-      description: 'This is Jill Project 1\n HAHA gg kerker\n yoyo',
-    },
-    {
-      id: 'cool',
-      name: 'Coooooooool',
-      description: 'Very cool project',
-    },
-    {
-      id: 'jill2',
-      name: 'Jill Project 2',
-      description: 'This is Jill Project 2',
-    },
-  ],
 }
 
 export default function data(state = initialState, action) {
