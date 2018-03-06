@@ -10,6 +10,9 @@ export { default as DatasetAdder } from './DatasetAdder'
 export { default as DatasetList } from './DatasetList'
 export { default as DatasetViewer } from './DatasetViewer'
 
+export { default as LabelPage } from './LabelPage'
+export { default as LabelTagsAdder } from './LabelTagsAdder'
+
 export { default as MainTabs } from './MainTabs'
 export { default as Link } from './Link'
 export { default as ListNavigation } from './ListNavigation'
