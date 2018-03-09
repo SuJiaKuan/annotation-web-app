@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import FlatButton from 'material-ui/FlatButton'
 import { Toolbar, ToolbarGroup, ToolbarTitle } from 'material-ui/Toolbar'
 
-import { LabelTagsAdder } from 'components'
+import { LabelTagsAdder, ObjectDetectionLabeler } from 'components'
 import { SUPPORTED_LABEL_TYPES } from 'constants/Projects'
 
 const Container = styled.div`
@@ -13,21 +13,45 @@ const Container = styled.div`
   width: 100vw;
   padding: 15px;
   box-sizing: border-box;
+
+  * {
+    box-sizing: border-box;
+  }
 `
 
-function LabelPage({ id, name, type, tagList, addTagList }) {
+function LabelPage({
+  id,
+  name,
+  type,
+  tagList,
+  labelList,
+  currentLabelIdx,
+  addTagList,
+  setTagVisibility,
+  updateLabelContent,
+}) {
   const Content = () => {
     if (type !== SUPPORTED_LABEL_TYPES[0].code) {
       return null
     }
 
-    return tagList.length === 0 ? <LabelTagsAdder addTagList={addTagList} /> : <div>labeling</div>
+    return tagList.length === 0 ? (
+      <LabelTagsAdder addTagList={addTagList} />
+    ) : (
+      <ObjectDetectionLabeler
+        tagList={tagList}
+        labelList={labelList}
+        currentLabelIdx={currentLabelIdx}
+        setTagVisibility={setTagVisibility}
+        updateLabelContent={updateLabelContent}
+      />
+    )
   }
 
   return (
     <div>
       <Toolbar>
-        <ToolbarGroup fristChild={true}>
+        <ToolbarGroup firstChild={true}>
           <ToolbarTitle text={name} />
         </ToolbarGroup>
         <ToolbarGroup lastChild={true}>
@@ -45,8 +69,12 @@ LabelPage.propTypes = {
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
-  tagList: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
+  tagList: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
+  labelList: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
+  currentLabelIdx: PropTypes.number.isRequired,
   addTagList: PropTypes.func.isRequired,
+  setTagVisibility: PropTypes.func.isRequired,
+  updateLabelContent: PropTypes.func.isRequired,
 }
 
 export default LabelPage

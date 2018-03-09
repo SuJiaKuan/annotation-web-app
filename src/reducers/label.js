@@ -1,4 +1,13 @@
-import { ADD_TAG_LIST_REQUEST, ADD_TAG_LIST_SUCCESS, ADD_TAG_LIST_FAIL } from 'constants/ActionTypes'
+import findIndex from 'lodash/findIndex'
+import clone from 'lodash/clone'
+
+import {
+  ADD_TAG_LIST_REQUEST,
+  ADD_TAG_LIST_SUCCESS,
+  ADD_TAG_LIST_FAIL,
+  SET_TAG_VISIBILITY,
+  UPDATE_LABEL_CONTENT,
+} from 'constants/ActionTypes'
 
 const initialState = {
   isFetch: false,
@@ -6,6 +15,8 @@ const initialState = {
   name: '',
   type: '',
   tagList: [],
+  labels: [],
+  currentLabelIdx: 0,
 }
 
 export default function label(state = initialState, action) {
@@ -29,6 +40,31 @@ export default function label(state = initialState, action) {
       return {
         ...state,
         isFetch: false,
+      }
+    }
+
+    case SET_TAG_VISIBILITY: {
+      const newTagList = clone(state.tagList)
+      const tagIdx = findIndex(newTagList, { name: action.tagName })
+
+      if (tagIdx >= 0) {
+        newTagList[tagIdx].visible = action.visible
+      }
+
+      return {
+        ...state,
+        tagList: newTagList,
+      }
+    }
+
+    case UPDATE_LABEL_CONTENT: {
+      const newLabelList = clone(state.labelList)
+
+      newLabelList[state.currentLabelIdx].content = action.content
+
+      return {
+        ...state,
+        labelList: newLabelList,
       }
     }
 

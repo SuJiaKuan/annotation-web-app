@@ -11,14 +11,11 @@ class LabelPageContainer extends React.Component {
   static propTypes = {
     label: PropTypes.object.isRequired,
     addTagList: PropTypes.func.isRequired,
-  }
-
-  addTagList = params => {
-    this.props.addTagList(params)
+    setTagVisibility: PropTypes.func.isRequired,
   }
 
   render() {
-    return <LabelPage {...this.props.label} addTagList={this.addTagList} />
+    return <LabelPage {...this.props.label} {...this.props} />
   }
 }
 

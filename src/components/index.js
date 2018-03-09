@@ -12,6 +12,7 @@ export { default as DatasetViewer } from './DatasetViewer'
 
 export { default as LabelPage } from './LabelPage'
 export { default as LabelTagsAdder } from './LabelTagsAdder'
+export { default as ObjectDetectionLabeler } from './ObjectDetectionLabeler'
 
 export { default as MainTabs } from './MainTabs'
 export { default as Link } from './Link'
