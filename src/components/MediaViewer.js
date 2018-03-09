@@ -21,8 +21,8 @@ const MoreBtnWrapper = styled.div`
 
 const enhance = withState('imagesViewLimit', 'increaseImagesViewLimit', IMAGES_VIEW_UNIT)
 
-function DatasetViewer({ datasetList, imagesViewLimit, increaseImagesViewLimit }) {
-  const ImagesGallery = ({ dataset }) => {
+function MediaViewer({ mediaList, imagesViewLimit, increaseImagesViewLimit }) {
+  const ImagesGallery = ({ media }) => {
     const size = 48
     const iconStyle = {
       width: size,
@@ -33,7 +33,7 @@ function DatasetViewer({ datasetList, imagesViewLimit, increaseImagesViewLimit }
       height: size * 2,
       padding: size / 2,
     }
-    const images = map(slice(dataset.images, 0, imagesViewLimit), image => (
+    const images = map(slice(media.images, 0, imagesViewLimit), image => (
       <GridTile key={image}>
         <img src={image} alt={image} />
       </GridTile>
@@ -41,12 +41,12 @@ function DatasetViewer({ datasetList, imagesViewLimit, increaseImagesViewLimit }
 
     return (
       <div>
-        <h3>{dataset.name}</h3>
-        <p>{dataset.description}</p>
+        <h3>{media.name}</h3>
+        <p>{media.description}</p>
         <GridList cellHeight={180} cols={4}>
           {images}
         </GridList>
-        {dataset.images.length >= imagesViewLimit && (
+        {media.images.length >= imagesViewLimit && (
           <MoreBtnWrapper>
             <IconButton
               iconStyle={iconStyle}
@@ -62,20 +62,20 @@ function DatasetViewer({ datasetList, imagesViewLimit, increaseImagesViewLimit }
   }
 
   const Viewer = withRouter(({ match }) => {
-    const dataset = find(datasetList, { id: match.params.id })
+    const media = find(mediaList, { id: match.params.id })
 
-    if (!dataset) {
-      return <h3>Dataset Not Found</h3>
+    if (!media) {
+      return <h3>Media Not Found</h3>
     } else {
-      return <ImagesGallery dataset={dataset} />
+      return <ImagesGallery media={media} />
     }
   })
 
   return <Viewer />
 }
 
-DatasetViewer.propTypes = {
-  datasetList: PropTypes.arrayOf(PropTypes.object).isRequired,
+MediaViewer.propTypes = {
+  mediaList: PropTypes.arrayOf(PropTypes.object).isRequired,
 }
 
-export default enhance(DatasetViewer)
+export default enhance(MediaViewer)

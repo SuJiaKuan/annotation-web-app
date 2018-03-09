@@ -2,7 +2,7 @@ import React from 'react'
 import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { ProjectsPageContainer, DataPageContainer, LabelPageContainer } from 'containers'
+import { ProjectsPageContainer, MediaPageContainer, LabelPageContainer } from 'containers'
 import { Header, MainTabs } from 'components'
 
 const Container = styled.div`
@@ -34,7 +34,7 @@ function Routes() {
                     <Switch>
                       <Route exact path="/" render={() => <Redirect to="/projects" />} />
                       <Route path="/projects" component={ProjectsPageContainer} />
-                      <Route path="/data" component={DataPageContainer} />
+                      <Route path="/media" component={MediaPageContainer} />
                     </Switch>
                   </AppContent>
                 </Container>

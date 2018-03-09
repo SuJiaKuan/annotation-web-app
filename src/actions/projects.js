@@ -6,14 +6,14 @@ import {
   // ADD_PROJECT_FAIL,
 } from 'constants/ActionTypes'
 
-export function addProject({ name, description, datasets, type }) {
+export function addProject({ name, description, mediaIds, type }) {
   return dispatch => {
     const id = uuid()
     const project = {
       id,
       name,
       description,
-      datasets,
+      mediaIds,
       type,
     }
 

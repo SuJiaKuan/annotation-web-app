@@ -51,14 +51,14 @@ const StyledDropzone = styled(Dropzone)`
   transition: opacity 0.3s linear;
 `
 
-class DatasetAdder extends React.Component {
+class MediaAdder extends React.Component {
   static propTypes = {
-    addDataset: PropTypes.func.isRequired,
+    addMedia: PropTypes.func.isRequired,
   }
 
   state = {
-    datasetDesc: '',
-    datasetName: '',
+    mediaDesc: '',
+    mediaName: '',
     dragged: false,
     file: null,
     stepIndex: 0,
@@ -83,28 +83,28 @@ class DatasetAdder extends React.Component {
   }
 
   handleUploadBtnClick = history => {
-    this.props.addDataset({
-      name: this.state.datasetName,
-      description: this.state.datasetDesc,
+    this.props.addMedia({
+      name: this.state.mediaName,
+      description: this.state.mediaDesc,
       media: this.state.file,
     })
 
-    history.push('/data')
+    history.push('/media')
   }
 
   handleFileBtnClick = () => {
     this.dropzone.open()
   }
 
-  handleDatasetNameChange = (e, datasetName) => {
+  handleMediaNameChange = (e, mediaName) => {
     this.setState({
-      datasetName,
+      mediaName,
     })
   }
 
-  handleDatasetDescChange = (e, datasetDesc) => {
+  handleMediaDescChange = (e, mediaDesc) => {
     this.setState({
-      datasetDesc,
+      mediaDesc,
     })
   }
 
@@ -135,7 +135,7 @@ class DatasetAdder extends React.Component {
   }
 
   render() {
-    const { datasetDesc, datasetName, file, stepIndex } = this.state
+    const { mediaDesc, mediaName, file, stepIndex } = this.state
 
     const acceptTypes = reduce(ACCEPT_VIDEO_TYPES, (pre, cur) => pre + `video/${cur},`, '')
     const UploadButton = withRouter(({ history }) => (
@@ -145,7 +145,7 @@ class DatasetAdder extends React.Component {
     let nextDisabled
 
     if (stepIndex === 0) {
-      nextDisabled = !datasetName
+      nextDisabled = !mediaName
     } else if (stepIndex === 1) {
       nextDisabled = !file
     }
@@ -154,7 +154,7 @@ class DatasetAdder extends React.Component {
       <VerticalContainer>
         <Stepper activeStep={stepIndex}>
           <Step>
-            <StepLabel>Dataset Description</StepLabel>
+            <StepLabel>Media Description</StepLabel>
           </Step>
           <Step>
             <StepLabel>Select File</StepLabel>
@@ -166,17 +166,13 @@ class DatasetAdder extends React.Component {
 
         {stepIndex === 0 && (
           <VerticalContainer>
-            <StyledTextField
-              floatingLabelText="Dataset Name"
-              value={datasetName}
-              onChange={this.handleDatasetNameChange}
-            />
+            <StyledTextField floatingLabelText="Media Name" value={mediaName} onChange={this.handleMediaNameChange} />
             <StyledTextField
               floatingLabelText="Description"
               multiLine={true}
               rows={3}
-              value={datasetDesc}
-              onChange={this.handleDatasetDescChange}
+              value={mediaDesc}
+              onChange={this.handleMediaDescChange}
             />
           </VerticalContainer>
         )}
@@ -200,7 +196,7 @@ class DatasetAdder extends React.Component {
         )}
         {stepIndex === 2 && (
           <VerticalContainer>
-            <p>{`Dataset Name: ${datasetName}`}</p>
+            <p>{`Media Name: ${mediaName}`}</p>
             <p>{`Selected File: ${file.name}`}</p>
           </VerticalContainer>
         )}
@@ -218,4 +214,4 @@ class DatasetAdder extends React.Component {
   }
 }
 
-export default DatasetAdder
+export default MediaAdder

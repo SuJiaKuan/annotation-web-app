@@ -1,7 +1,7 @@
 import config from 'config/client-config'
 
 import ApiClient from './ApiClient'
-import DataApi from './Data'
+import MediaApi from './Media'
 
 function apiFactory({ apiPrefix } = { apiPrefix: config.apiRoot }) {
   if (!apiPrefix) {
@@ -12,7 +12,7 @@ function apiFactory({ apiPrefix } = { apiPrefix: config.apiRoot }) {
 
   return {
     apiClient: api,
-    data: new DataApi({ apiClient: api }),
+    media: new MediaApi({ apiClient: api }),
   }
 }
 

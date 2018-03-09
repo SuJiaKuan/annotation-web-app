@@ -9,7 +9,7 @@ import * as ProjectsActions from 'actions/projects'
 
 class ProjectsPageContainer extends React.Component {
   static propTypes = {
-    data: PropTypes.object.isRequired,
+    media: PropTypes.object.isRequired,
     projects: PropTypes.object.isRequired,
     addProject: PropTypes.func.isRequired,
   }
@@ -21,7 +21,7 @@ class ProjectsPageContainer extends React.Component {
   render() {
     return (
       <ProjectsPage
-        datasetList={this.props.data.datasetList}
+        mediaList={this.props.media.mediaList}
         projectList={this.props.projects.projectList}
         addProject={this.addProject}
       />
@@ -30,7 +30,7 @@ class ProjectsPageContainer extends React.Component {
 }
 
 const mapStateToProps = createStructuredSelector({
-  data: createSelector(state => state.data, dataState => dataState),
+  media: createSelector(state => state.media, mediaState => mediaState),
   projects: createSelector(state => state.projects, projectsState => projectsState),
 })
 

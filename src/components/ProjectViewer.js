@@ -13,7 +13,7 @@ import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowCol
 
 import { SUPPORTED_LABEL_TYPES } from 'constants/Projects'
 
-function ProjectViewer({ datasetList, projectList }) {
+function ProjectViewer({ mediaList, projectList }) {
   const NameWrapper = styled.h3`
     display: flex;
     flex-direction: row;
@@ -46,18 +46,18 @@ function ProjectViewer({ datasetList, projectList }) {
     )
   }
 
-  const AttachedDatasets = ({ project }) => {
-    const rows = map(project.datasetIds, id => {
-      const dataset = find(datasetList, { id })
-      const size = dataset.images.length
+  const AttachedMediaList = ({ project }) => {
+    const rows = map(project.mediaIds, id => {
+      const media = find(mediaList, { id })
+      const size = media.images.length
       const sizeText = `${size} ${size > 1 ? 'images' : 'image'}`
 
       return (
         <TableRow key={id}>
-          <TableRowColumn>{dataset.name}</TableRowColumn>
+          <TableRowColumn>{media.name}</TableRowColumn>
           <TableRowColumn>{sizeText}</TableRowColumn>
           <TableRowColumn>
-            <RaisedButton label="view" secondary={true} href={`/data/${id}`} />
+            <RaisedButton label="view" secondary={true} href={`/media/${id}`} />
           </TableRowColumn>
         </TableRow>
       )
@@ -65,7 +65,7 @@ function ProjectViewer({ datasetList, projectList }) {
 
     return (
       <Card>
-        <CardTitle title="Attached Datasets" />
+        <CardTitle title="Attached Media list" />
         <CardText>
           <Table selectable={false}>
             <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
@@ -90,7 +90,7 @@ function ProjectViewer({ datasetList, projectList }) {
           <RaisedButton label="Start Labeling" primary={true} href={`/label/${project.id}`} />
         </NameWrapper>
         <Overview project={project} />
-        <AttachedDatasets project={project} />
+        <AttachedMediaList project={project} />
         <br />
       </div>
     )
@@ -110,7 +110,7 @@ function ProjectViewer({ datasetList, projectList }) {
 }
 
 ProjectViewer.propTypes = {
-  datasetList: PropTypes.arrayOf(PropTypes.object).isRequired,
+  mediaList: PropTypes.arrayOf(PropTypes.object).isRequired,
   projectList: PropTypes.arrayOf(PropTypes.object).isRequired,
 }
 

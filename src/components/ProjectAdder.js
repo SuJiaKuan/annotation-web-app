@@ -31,13 +31,13 @@ const DescContainer = styled.div`
   justify-content: flex-start;
 `
 
-const DatasetsSelectorContainer = styled.div`
+const MediaListSelectorContainer = styled.div`
   max-width: 400px;
 `
 
 class ProjectAdder extends React.Component {
   static propTypes = {
-    datasetList: PropTypes.arrayOf(PropTypes.object).isRequired,
+    mediaList: PropTypes.arrayOf(PropTypes.object).isRequired,
     addProject: PropTypes.func.isRequired,
   }
 
@@ -45,7 +45,7 @@ class ProjectAdder extends React.Component {
     stepIndex: 0,
     name: '',
     description: '',
-    attachedDatasets: '',
+    attachedMediaIds: [],
     selectedType: SUPPORTED_LABEL_TYPES[0].code,
   }
 
@@ -71,7 +71,7 @@ class ProjectAdder extends React.Component {
     this.props.addProject({
       name: this.state.name,
       description: this.state.description,
-      datasets: this.state.attachedDatasets,
+      mediaIds: this.state.attachedMediaIds,
       type: this.state.selectedType,
     })
 
@@ -90,11 +90,11 @@ class ProjectAdder extends React.Component {
     })
   }
 
-  handleDatasetsSelect = idxArr => {
-    const { datasetList } = this.props
+  handleMediaListSelect = idxArr => {
+    const { mediaList } = this.props
 
     this.setState({
-      attachedDatasets: map(idxArr, idx => datasetList[idx].id),
+      attachedMediaIds: map(idxArr, idx => mediaList[idx].id),
     })
   }
 
@@ -105,11 +105,11 @@ class ProjectAdder extends React.Component {
   }
 
   renderStepActions() {
-    const { datasetList } = this.props
-    const { stepIndex, name, attachedDatasets } = this.state
+    const { mediaList } = this.props
+    const { stepIndex, name, attachedMediaIds } = this.state
 
     const prevBtnDisabled = stepIndex === 0
-    const nextBtnDisabled = stepIndex === 0 ? !name : datasetList.length === 0 || attachedDatasets.length === 0
+    const nextBtnDisabled = stepIndex === 0 ? !name : mediaList.length === 0 || attachedMediaIds.length === 0
 
     const CompleteButton = withRouter(({ history }) => (
       <RaisedButton label="Complete" primary={true} onClick={this.handleCompleteBtnClick.bind(this, history)} />
@@ -143,38 +143,38 @@ class ProjectAdder extends React.Component {
     )
   }
 
-  renderDatasetsSelector() {
-    const { datasetList } = this.props
-    const { attachedDatasets } = this.state
+  renderMediaListSelector() {
+    const { mediaList } = this.props
+    const { attachedMediaIds } = this.state
 
     const ColorLink = Link.extend`
       color: ${props => `${props.theme.color.primary} !important`};
     `
 
-    const showSelector = datasetList.length > 0
-    const rows = map(datasetList, dataset => {
-      const selected = includes(attachedDatasets, dataset.id)
-      const size = dataset.images.length
+    const showSelector = mediaList.length > 0
+    const rows = map(mediaList, media => {
+      const selected = includes(attachedMediaIds, media.id)
+      const size = media.images.length
       const sizeText = `${size} ${size > 1 ? 'images' : 'image'}`
 
       return (
-        <TableRow key={dataset.id} selected={selected}>
-          <TableRowColumn>{dataset.name}</TableRowColumn>
+        <TableRow key={media.id} selected={selected}>
+          <TableRowColumn>{media.name}</TableRowColumn>
           <TableRowColumn>{sizeText}</TableRowColumn>
         </TableRow>
       )
     })
 
     return (
-      <DatasetsSelectorContainer>
-        {showSelector && <p>Plase select one or more datasets</p>}
-        {!showSelector && <ColorLink to="/data/new">Please Add a new dataset first</ColorLink>}
+      <MediaListSelectorContainer>
+        {showSelector && <p>Plase select one or more media</p>}
+        {!showSelector && <ColorLink to="/media/new">Please Add a new media first</ColorLink>}
         {showSelector && (
-          <Table multiSelectable={true} onRowSelection={this.handleDatasetsSelect}>
+          <Table multiSelectable={true} onRowSelection={this.handleMediaListSelect}>
             <TableBody deselectOnClickaway={false}>{rows}</TableBody>
           </Table>
         )}
-      </DatasetsSelectorContainer>
+      </MediaListSelectorContainer>
     )
   }
 
@@ -213,9 +213,9 @@ class ProjectAdder extends React.Component {
           </StepContent>
         </Step>
         <Step>
-          <StepLabel>Attach Datasets</StepLabel>
+          <StepLabel>Attach Media from List</StepLabel>
           <StepContent>
-            {this.renderDatasetsSelector()}
+            {this.renderMediaListSelector()}
             {this.renderStepActions()}
           </StepContent>
         </Step>

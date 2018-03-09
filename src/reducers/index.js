@@ -1,11 +1,11 @@
 import { combineReducers } from 'redux'
 
-import data from './data'
+import media from './media'
 import projects from './projects'
 import label from './label'
 
 const rootReducer = combineReducers({
-  data,
+  media,
   projects,
   label,
 })

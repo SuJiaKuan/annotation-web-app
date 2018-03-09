@@ -1,7 +1,7 @@
 import Base from './Base'
 
-export default class DataAPI extends Base {
-  addDataset(payload) {
+export default class MediaAPI extends Base {
+  addMedia(payload) {
     return this.apiClient.post({
       url: '/media',
       payload,

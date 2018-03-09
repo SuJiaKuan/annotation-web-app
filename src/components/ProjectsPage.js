@@ -4,17 +4,17 @@ import { Route, Switch } from 'react-router-dom'
 
 import { ListNavigation, ProjectList, ProjectAdder, ProjectViewer } from 'components'
 
-function ProjectsPage({ datasetList, projectList, addProject }) {
+function ProjectsPage({ mediaList, projectList, addProject }) {
   const Content = () => (
     <Switch>
       <Route exact path="/projects">
         <ProjectList projectList={projectList} />
       </Route>
       <Route exact path="/projects/new">
-        <ProjectAdder datasetList={datasetList} addProject={addProject} />
+        <ProjectAdder mediaList={mediaList} addProject={addProject} />
       </Route>
       <Route path="/projects/:id">
-        <ProjectViewer projectList={projectList} datasetList={datasetList} />
+        <ProjectViewer projectList={projectList} mediaList={mediaList} />
       </Route>
     </Switch>
   )
@@ -28,7 +28,7 @@ function ProjectsPage({ datasetList, projectList, addProject }) {
 }
 
 ProjectsPage.propTypes = {
-  datasetList: PropTypes.arrayOf(PropTypes.object).isRequired,
+  mediaList: PropTypes.arrayOf(PropTypes.object).isRequired,
   projectList: PropTypes.arrayOf(PropTypes.object).isRequired,
   addProject: PropTypes.func.isRequired,
 }

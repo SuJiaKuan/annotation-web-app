@@ -7,7 +7,7 @@ import map from 'lodash/map'
 import { BottomNavigation, BottomNavigationItem } from 'material-ui/BottomNavigation'
 import FontIcon from 'material-ui/FontIcon'
 
-const LABELS = ['projects', 'data']
+const LABELS = ['projects', 'media']
 const ICONS = ['style', 'image']
 
 class MainTabs extends React.Component {

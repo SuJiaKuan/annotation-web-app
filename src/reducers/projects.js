@@ -7,7 +7,7 @@ const initialState = {
   projectList: [],
 }
 
-export default function data(state = initialState, action) {
+export default function projects(state = initialState, action) {
   switch (action.type) {
     case ADD_PROJECT_REQUEST: {
       return {

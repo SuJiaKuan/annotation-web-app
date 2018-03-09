@@ -2,12 +2,12 @@ import uuid from 'uuid/v4'
 
 import api from 'api'
 
-import { ADD_DATASET_REQUEST, ADD_DATASET_SUCCESS, ADD_DATASET_FAIL } from 'constants/ActionTypes'
+import { ADD_MEDIA_REQUEST, ADD_MEDIA_SUCCESS, ADD_MEDIA_FAIL } from 'constants/ActionTypes'
 
-export function addDataset({ name, description, media }) {
+export function addMedia({ name, description, media }) {
   return dispatch => {
     const id = uuid()
-    const dataset = {
+    const media = {
       id,
       name,
       description,
@@ -20,21 +20,22 @@ export function addDataset({ name, description, media }) {
     formData.append('media', media)
 
     dispatch({
-      type: ADD_DATASET_REQUEST,
+      type: ADD_MEDIA_REQUEST,
     })
 
-    api.data
-      .addDataset(formData)
+    api.media
+      .addMedia(formData)
       .then(res => {
+        console.log(res)
         dispatch({
-          type: ADD_DATASET_SUCCESS,
-          dataset,
+          type: ADD_MEDIA_SUCCESS,
+          media,
         })
       })
       .catch(() => {
         // TODO(Su JiaKuan): More elegant error handling.
         dispatch({
-          type: ADD_DATASET_FAIL,
+          type: ADD_MEDIA_FAIL,
         })
       })
   }
