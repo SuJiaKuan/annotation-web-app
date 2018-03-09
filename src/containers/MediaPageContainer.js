@@ -5,7 +5,9 @@ import { createStructuredSelector, createSelector } from 'reselect'
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+
 import * as MediaActions from 'actions/media'
+import connectDataFetchers from 'utils/connectDataFetchers'
 
 class MediaPageContainer extends React.Component {
   static propTypes = {
@@ -30,4 +32,4 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(MediaActions, dispatch)
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(MediaPageContainer)
+export default connect(mapStateToProps, mapDispatchToProps)(connectDataFetchers(MediaPageContainer, ['getMediaList']))

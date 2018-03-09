@@ -8,4 +8,11 @@ export default class MediaAPI extends Base {
       contentType: 'multipart/form-data',
     })
   }
+
+  getMediaList() {
+    return this.apiClient.post({
+      url: '/media/query',
+      payload: {},
+    })
+  }
 }

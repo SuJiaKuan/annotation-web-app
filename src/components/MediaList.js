@@ -18,11 +18,11 @@ function MediaList({ mediaList }) {
     primaryText: 'Add new media',
   }
   const listInfo = map(mediaList, media => {
-    const size = media.images.length
-    const sizeText = `${size} ${size > 1 ? 'images' : 'image'}`
+    const size = media.frameNum
+    const sizeText = `${size} ${size > 1 ? 'frames' : 'frame'}`
 
     return {
-      to: `/media/${media.id}`,
+      to: `/media/${media._id}`,
       icon: <MediaIcon />,
       primaryText: media.name,
       secondaryText: sizeText,

@@ -2,7 +2,14 @@ import uuid from 'uuid/v4'
 
 import api from 'api'
 
-import { ADD_MEDIA_REQUEST, ADD_MEDIA_SUCCESS, ADD_MEDIA_FAIL } from 'constants/ActionTypes'
+import {
+  ADD_MEDIA_REQUEST,
+  ADD_MEDIA_SUCCESS,
+  ADD_MEDIA_FAIL,
+  GET_MEDIA_LIST_REQUEST,
+  GET_MEDIA_LIST_SUCCESS,
+  GET_MEDIA_LIST_FAIL,
+} from 'constants/ActionTypes'
 
 export function addMedia({ name, description, media }) {
   return dispatch => {
@@ -26,7 +33,6 @@ export function addMedia({ name, description, media }) {
     api.media
       .addMedia(formData)
       .then(res => {
-        console.log(res)
         dispatch({
           type: ADD_MEDIA_SUCCESS,
           media,
@@ -36,6 +42,29 @@ export function addMedia({ name, description, media }) {
         // TODO(Su JiaKuan): More elegant error handling.
         dispatch({
           type: ADD_MEDIA_FAIL,
+        })
+      })
+  }
+}
+
+export function getMediaList() {
+  return dispatch => {
+    dispatch({
+      type: GET_MEDIA_LIST_REQUEST,
+    })
+
+    api.media
+      .getMediaList()
+      .then(({ data }) => {
+        dispatch({
+          type: GET_MEDIA_LIST_SUCCESS,
+          mediaList: data,
+        })
+      })
+      .catch(() => {
+        // TODO(Su JiaKuan): More elegant error handling.
+        dispatch({
+          type: GET_MEDIA_LIST_FAIL,
         })
       })
   }
