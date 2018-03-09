@@ -12,7 +12,7 @@ import { GridList, GridTile } from 'material-ui/GridList'
 import IconButton from 'material-ui/IconButton'
 import MoreIcon from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
-import { IMAGES_VIEW_UNIT } from 'constants/Data'
+import { IMAGES_VIEW_UNIT } from 'constants/Media'
 
 const MoreBtnWrapper = styled.div`
   display: flex;
