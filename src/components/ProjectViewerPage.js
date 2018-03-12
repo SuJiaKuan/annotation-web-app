@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 
 import find from 'lodash/find'
@@ -11,9 +10,10 @@ import RaisedButton from 'material-ui/RaisedButton'
 import Subheader from 'material-ui/Subheader'
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table'
 
+import { PageLoading } from 'components'
 import { SUPPORTED_LABEL_TYPES } from 'constants/Projects'
 
-function ProjectViewer({ mediaList, projectList }) {
+function ProjectViewerPage({ isLoading, projectView, mediaList }) {
   const NameWrapper = styled.h3`
     display: flex;
     flex-direction: row;
@@ -46,18 +46,17 @@ function ProjectViewer({ mediaList, projectList }) {
     )
   }
 
-  const AttachedMediaList = ({ project }) => {
-    const rows = map(project.mediaIds, id => {
-      const media = find(mediaList, { id })
-      const size = media.images.length
-      const sizeText = `${size} ${size > 1 ? 'images' : 'image'}`
+  const AttachedMediaList = ({ mediaList }) => {
+    const rows = map(mediaList, media => {
+      const size = media.frameNum
+      const sizeText = `${size} ${size > 1 ? 'frames' : 'frame'}`
 
       return (
-        <TableRow key={id}>
+        <TableRow key={media._id}>
           <TableRowColumn>{media.name}</TableRowColumn>
           <TableRowColumn>{sizeText}</TableRowColumn>
           <TableRowColumn>
-            <RaisedButton label="view" secondary={true} href={`/media/${id}`} />
+            <RaisedButton label="view" secondary={true} href={`/media/${media._id}`} />
           </TableRowColumn>
         </TableRow>
       )
@@ -87,31 +86,31 @@ function ProjectViewer({ mediaList, projectList }) {
       <div>
         <NameWrapper>
           {project.name}
-          <RaisedButton label="Start Labeling" primary={true} href={`/label/${project.id}`} />
+          <RaisedButton label="Start Labeling" primary={true} href={`/label/${project._id}`} />
         </NameWrapper>
         <Overview project={project} />
-        <AttachedMediaList project={project} />
+        <AttachedMediaList mediaList={project.mediaList} />
         <br />
       </div>
     )
   }
 
-  const Content = withRouter(({ match }) => {
-    const project = find(projectList, { id: match.params.id })
-
-    if (!project) {
-      return <h3>Project Not Found</h3>
+  const Content = () => {
+    if (isLoading) {
+      return <PageLoading />
+    } else if (!projectView) {
+      return <h3>Fail to Load Project</h3>
     } else {
-      return <Viewer project={project} />
+      return <Viewer project={projectView} />
     }
-  })
+  }
 
   return <Content />
 }
 
-ProjectViewer.propTypes = {
-  mediaList: PropTypes.arrayOf(PropTypes.object).isRequired,
-  projectList: PropTypes.arrayOf(PropTypes.object).isRequired,
+ProjectViewerPage.propTypes = {
+  isLoading: PropTypes.bool.isRequired,
+  projectView: PropTypes.object,
 }
 
-export default ProjectViewer
+export default ProjectViewerPage

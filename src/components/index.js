@@ -2,8 +2,7 @@ export { default as Header } from './Header'
 
 export { default as ProjectsPage } from './ProjectsPage'
 export { default as ProjectList } from './ProjectList'
-export { default as ProjectViewer } from './ProjectViewer'
-
+export { default as ProjectViewerPage } from './ProjectViewerPage'
 export { default as ProjectAdderPage } from './ProjectAdderPage'
 
 export { default as MediaPage } from './MediaPage'

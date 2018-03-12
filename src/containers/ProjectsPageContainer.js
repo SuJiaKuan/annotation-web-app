@@ -14,7 +14,7 @@ class ProjectsPageContainer extends React.Component {
   }
 
   render() {
-    return <ProjectsPage mediaList={this.props.media.mediaList} projectList={this.props.projects.projectList} />
+    return <ProjectsPage projectList={this.props.projects.projectList} />
   }
 }
 

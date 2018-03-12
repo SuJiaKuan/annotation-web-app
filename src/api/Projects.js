@@ -14,4 +14,10 @@ export default class ProjectAPI extends Base {
       payload,
     })
   }
+
+  getProject(id) {
+    return this.apiClient.get({
+      url: `/projects/${id}`,
+    })
+  }
 }

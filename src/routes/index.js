@@ -6,6 +6,7 @@ import history from './history'
 import {
   ProjectsPageContainer,
   ProjectAdderPageContainer,
+  ProjectViewerPageContainer,
   MediaPageContainer,
   MediaAdderPageContainer,
   MediaViewerPageContainer,
@@ -41,8 +42,9 @@ function Routes() {
                   <AppContent>
                     <Switch>
                       <Route exact path="/" render={() => <Redirect to="/projects" />} />
+                      <Route exact path="/projects" component={ProjectsPageContainer} />
                       <Route path="/projects/new" component={ProjectAdderPageContainer} />
-                      <Route path="/projects" component={ProjectsPageContainer} />
+                      <Route path="/projects/:id" component={ProjectViewerPageContainer} />
                       <Route exact path="/media" component={MediaPageContainer} />
                       <Route path="/media/new" component={MediaAdderPageContainer} />
                       <Route path="/media/:id" component={MediaViewerPageContainer} />

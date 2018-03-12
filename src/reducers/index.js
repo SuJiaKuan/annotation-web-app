@@ -5,6 +5,7 @@ import mediaAdder from './mediaAdder'
 import mediaViewer from './mediaViewer'
 import projects from './projects'
 import projectAdder from './projectAdder'
+import projectViewer from './projectViewer'
 import label from './label'
 
 const rootReducer = combineReducers({
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
   mediaViewer,
   projects,
   projectAdder,
+  projectViewer,
   label,
 })
 

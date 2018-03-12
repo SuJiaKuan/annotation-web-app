@@ -9,10 +9,10 @@ export default class MediaAPI extends Base {
     })
   }
 
-  getMediaList() {
+  getMediaList(payload) {
     return this.apiClient.post({
       url: '/media/query',
-      payload: {},
+      payload,
     })
   }
 }
