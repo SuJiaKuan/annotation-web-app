@@ -1,5 +1,3 @@
-import uuid from 'uuid/v4'
-
 import api from 'api'
 import history from 'routes/history'
 
@@ -20,13 +18,6 @@ import {
 
 export function addMedia({ name, description, media, redirect }) {
   return dispatch => {
-    const id = uuid()
-    const media = {
-      id,
-      name,
-      description,
-      images: [],
-    }
     const formData = new FormData()
 
     formData.append('name', name)
@@ -42,7 +33,6 @@ export function addMedia({ name, description, media, redirect }) {
       .then(res => {
         dispatch({
           type: ADD_MEDIA_SUCCESS,
-          media,
         })
 
         if (redirect) {
