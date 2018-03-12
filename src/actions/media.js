@@ -10,6 +10,9 @@ import {
   GET_MEDIA_LIST_REQUEST,
   GET_MEDIA_LIST_SUCCESS,
   GET_MEDIA_LIST_FAIL,
+  REFRESH_MEDIA_LIST_REQUEST,
+  REFRESH_MEDIA_LIST_SUCCESS,
+  REFRESH_MEDIA_LIST_FAIL,
   GET_MEDIA_REQUEST,
   GET_MEDIA_SUCCESS,
   // GET_MEDIA_FAIL,
@@ -71,25 +74,35 @@ export function getMedia({ match }) {
   }
 }
 
+function getMediaListInner(dispatch, requestAction, successAction, failAction) {
+  dispatch({
+    type: requestAction,
+  })
+
+  api.media
+    .getMediaList()
+    .then(({ data }) => {
+      dispatch({
+        type: successAction,
+        mediaList: data,
+      })
+    })
+    .catch(() => {
+      // TODO(Su JiaKuan): More elegant error handling.
+      dispatch({
+        type: failAction,
+      })
+    })
+}
+
 export function getMediaList() {
   return dispatch => {
-    dispatch({
-      type: GET_MEDIA_LIST_REQUEST,
-    })
+    getMediaListInner(dispatch, GET_MEDIA_LIST_REQUEST, GET_MEDIA_LIST_SUCCESS, GET_MEDIA_LIST_FAIL)
+  }
+}
 
-    api.media
-      .getMediaList()
-      .then(({ data }) => {
-        dispatch({
-          type: GET_MEDIA_LIST_SUCCESS,
-          mediaList: data,
-        })
-      })
-      .catch(() => {
-        // TODO(Su JiaKuan): More elegant error handling.
-        dispatch({
-          type: GET_MEDIA_LIST_FAIL,
-        })
-      })
+export function refreshMediaList() {
+  return dispatch => {
+    getMediaListInner(dispatch, REFRESH_MEDIA_LIST_REQUEST, REFRESH_MEDIA_LIST_SUCCESS, REFRESH_MEDIA_LIST_FAIL)
   }
 }

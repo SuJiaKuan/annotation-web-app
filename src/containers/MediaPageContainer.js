@@ -6,21 +6,33 @@ import { createStructuredSelector, createSelector } from 'reselect'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
+import find from 'lodash/find'
+
 import * as MediaActions from 'actions/media'
 import connectDataFetchers from 'utils/connectDataFetchers'
+import { MEDIA_STATUS } from 'constants/Media'
+
+const REFRESH_INTERVAL = 3000
 
 class MediaPageContainer extends React.Component {
   static propTypes = {
     media: PropTypes.object.isRequired,
-    addMedia: PropTypes.func.isRequired,
   }
 
-  addMedia = params => {
-    this.props.addMedia(params)
+  componentDidMount() {
+    this.refresher = setInterval(() => {
+      if (find(this.props.media.mediaList, { status: MEDIA_STATUS.PROCESSING })) {
+        this.props.refreshMediaList()
+      }
+    }, REFRESH_INTERVAL)
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.refresher)
   }
 
   render() {
-    return <MediaPage mediaList={this.props.media.mediaList} addMedia={this.addMedia} />
+    return <MediaPage {...this.props.media} />
   }
 }
 

@@ -16,16 +16,36 @@ const ObviousAvatar = styled(Avatar)`
 `
 
 function ListSummary({ summary }) {
-  const listItems = map(summary, (item, idx) => {
-    const avatar = item.obvious ? <ObviousAvatar icon={item.icon} /> : <Avatar icon={item.icon} />
-
-    // FIXME(Su JiaKuan): Use index as key is not recommended. Fix me please.
-    return (
-      <Link key={idx} to={item.to}>
-        <ListItem leftAvatar={avatar} primaryText={item.primaryText} secondaryText={item.secondaryText} />
+  const listItems = map(summary, item => {
+    const { key, obvious, icon, to, disabled, primaryText, secondaryText } = item
+    const avatar = obvious ? <ObviousAvatar icon={icon} /> : <Avatar icon={icon} />
+    const style = !disabled
+      ? {}
+      : {
+          opacity: '0.5',
+        }
+    const listItemInner = (
+      <ListItem
+        leftAvatar={avatar}
+        disabled={disabled}
+        primaryText={primaryText}
+        secondaryText={secondaryText}
+        style={style}
+      />
+    )
+    const listItemOutter = !disabled ? (
+      <Link to={to}>
+        {listItemInner}
         <Divider />
       </Link>
+    ) : (
+      <div>
+        {listItemInner}
+        <Divider />
+      </div>
     )
+
+    return <div key={key}>{listItemOutter}</div>
   })
 
   return <List>{listItems}</List>

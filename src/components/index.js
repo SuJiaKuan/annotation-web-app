@@ -7,10 +7,7 @@ export { default as ProjectViewer } from './ProjectViewer'
 export { default as ProjectAdderPage } from './ProjectAdderPage'
 
 export { default as MediaPage } from './MediaPage'
-export { default as MediaList } from './MediaList'
-
 export { default as MediaAdderPage } from './MediaAdderPage'
-
 export { default as MediaViewerPage } from './MediaViewerPage'
 
 export { default as LabelPage } from './LabelPage'

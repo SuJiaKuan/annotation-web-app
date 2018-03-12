@@ -43,9 +43,9 @@ function Routes() {
                       <Route exact path="/" render={() => <Redirect to="/projects" />} />
                       <Route path="/projects/new" component={ProjectAdderPageContainer} />
                       <Route path="/projects" component={ProjectsPageContainer} />
+                      <Route exact path="/media" component={MediaPageContainer} />
                       <Route path="/media/new" component={MediaAdderPageContainer} />
                       <Route path="/media/:id" component={MediaViewerPageContainer} />
-                      <Route path="/media" component={MediaPageContainer} />
                     </Switch>
                   </AppContent>
                 </Container>

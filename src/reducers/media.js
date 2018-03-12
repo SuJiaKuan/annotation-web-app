@@ -1,7 +1,14 @@
-import { GET_MEDIA_LIST_REQUEST, GET_MEDIA_LIST_SUCCESS, GET_MEDIA_LIST_FAIL } from 'constants/ActionTypes'
+import {
+  GET_MEDIA_LIST_REQUEST,
+  GET_MEDIA_LIST_SUCCESS,
+  GET_MEDIA_LIST_FAIL,
+  REFRESH_MEDIA_LIST_REQUEST,
+  REFRESH_MEDIA_LIST_SUCCESS,
+  REFRESH_MEDIA_LIST_FAIL,
+} from 'constants/ActionTypes'
 
 const initialState = {
-  isFetch: false,
+  isLoading: false,
   mediaList: [],
 }
 
@@ -10,14 +17,14 @@ export default function media(state = initialState, action) {
     case GET_MEDIA_LIST_REQUEST: {
       return {
         ...state,
-        isFetch: true,
+        isLoading: true,
       }
     }
 
     case GET_MEDIA_LIST_SUCCESS: {
       return {
         ...state,
-        isFetch: true,
+        isLoading: false,
         mediaList: action.mediaList,
       }
     }
@@ -25,7 +32,26 @@ export default function media(state = initialState, action) {
     case GET_MEDIA_LIST_FAIL: {
       return {
         ...state,
-        isFetch: true,
+        isLoading: true,
+      }
+    }
+
+    case REFRESH_MEDIA_LIST_REQUEST: {
+      return {
+        ...state,
+      }
+    }
+
+    case REFRESH_MEDIA_LIST_SUCCESS: {
+      return {
+        ...state,
+        mediaList: action.mediaList,
+      }
+    }
+
+    case REFRESH_MEDIA_LIST_FAIL: {
+      return {
+        ...state,
       }
     }
 
