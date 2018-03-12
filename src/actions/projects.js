@@ -16,8 +16,12 @@ export function addProject({ name, description, mediaIds, type, labels, redirect
         type,
         labels,
       })
-      .then(() => {
-        // TODO(Su JiaKuan): Also add media IDs.
+      .then(({ data: { projectId } }) => {
+        return api.projects.attachMediaList(projectId, {
+          mediaIds,
+        })
+      })
+      .then(({ data }) => {
         dispatch({
           type: ADD_PROJECT_SUCCESS,
         })

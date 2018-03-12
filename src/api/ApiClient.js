@@ -35,7 +35,7 @@ export default class ApiClient {
   patch({ url, payload = {}, contentType = 'application/json' }) {
     return this.request({
       url,
-      method: 'put',
+      method: 'patch',
       body: payload,
       contentType,
     })
