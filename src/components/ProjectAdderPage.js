@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
 import concat from 'lodash/concat'
+import filter from 'lodash/filter'
 import includes from 'lodash/includes'
 import map from 'lodash/map'
 import remove from 'lodash/remove'
@@ -18,6 +19,7 @@ import TextField from 'material-ui/TextField'
 
 import { Link, PageLoading } from 'components'
 import { labelColor } from 'utils/styles'
+import { MEDIA_STATUS } from 'constants/Media'
 import { SUPPORTED_LABEL_TYPES, PREDEFINED_LABELS } from 'constants/Projects'
 
 const ButtonsContainer = styled.div`
@@ -86,6 +88,8 @@ class ProjectAdder extends React.Component {
     insertedLabelList: [],
   }
 
+  getAvailableMediaList = () => filter(this.props.mediaList, { status: MEDIA_STATUS.DONE })
+
   handlePrevBtnClick = () => {
     const { stepIndex } = this.state
 
@@ -128,7 +132,7 @@ class ProjectAdder extends React.Component {
   }
 
   handleMediaListSelect = idxArr => {
-    const { mediaList } = this.props
+    const mediaList = this.getAvailableMediaList()
 
     this.setState({
       attachedMediaIds: map(idxArr, idx => mediaList[idx]._id),
@@ -178,8 +182,9 @@ class ProjectAdder extends React.Component {
   }
 
   renderStepActions() {
-    const { mediaList, isAdding } = this.props
+    const { isAdding } = this.props
     const { stepIndex, name, attachedMediaIds, insertedLabelList } = this.state
+    const mediaList = this.getAvailableMediaList()
 
     const prevBtnDisabled = stepIndex === 0 || (stepIndex === 3 && isAdding)
     const completBtnDisabled = insertedLabelList.length === 0 || isAdding
@@ -227,8 +232,8 @@ class ProjectAdder extends React.Component {
   }
 
   renderMediaListSelector() {
-    const { mediaList } = this.props
     const { attachedMediaIds } = this.state
+    const mediaList = this.getAvailableMediaList()
 
     const showSelector = mediaList.length > 0
     const rows = map(mediaList, media => {
@@ -335,7 +340,8 @@ class ProjectAdder extends React.Component {
   }
 
   render() {
-    const { isLoading, mediaList } = this.props
+    const { isLoading } = this.props
+    const mediaList = this.getAvailableMediaList()
     return (
       <div>
         {isLoading && <PageLoading />}
