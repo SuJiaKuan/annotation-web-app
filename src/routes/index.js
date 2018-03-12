@@ -1,8 +1,9 @@
 import React from 'react'
-import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom'
+import { Router, Route, Redirect, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { ProjectsPageContainer, MediaPageContainer, LabelPageContainer } from 'containers'
+import history from './history'
+import { ProjectsPageContainer, ProjectAdderPageContainer, MediaPageContainer, LabelPageContainer } from 'containers'
 import { Header, MainTabs } from 'components'
 
 const Container = styled.div`
@@ -15,7 +16,7 @@ const AppContent = styled.div`
 
 function Routes() {
   return (
-    <Router>
+    <Router history={history}>
       <div>
         <Route exact path="/label/:id" component={LabelPageContainer} />
         <Route
@@ -33,6 +34,7 @@ function Routes() {
                   <AppContent>
                     <Switch>
                       <Route exact path="/" render={() => <Redirect to="/projects" />} />
+                      <Route path="/projects/new" component={ProjectAdderPageContainer} />
                       <Route path="/projects" component={ProjectsPageContainer} />
                       <Route path="/media" component={MediaPageContainer} />
                     </Switch>

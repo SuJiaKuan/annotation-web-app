@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import FlatButton from 'material-ui/FlatButton'
 import { Toolbar, ToolbarGroup, ToolbarTitle } from 'material-ui/Toolbar'
 
-import { LabelTagsAdder, ObjectDetectionLabeler } from 'components'
+import { ObjectDetectionLabeler } from 'components'
 import { SUPPORTED_LABEL_TYPES } from 'constants/Projects'
 
 const Container = styled.div`
@@ -19,25 +19,13 @@ const Container = styled.div`
   }
 `
 
-function LabelPage({
-  id,
-  name,
-  type,
-  tagList,
-  labelList,
-  currentLabelIdx,
-  addTagList,
-  setTagVisibility,
-  updateLabelContent,
-}) {
+function LabelPage({ id, name, type, tagList, labelList, currentLabelIdx, setTagVisibility, updateLabelContent }) {
   const Content = () => {
     if (type !== SUPPORTED_LABEL_TYPES[0].code) {
       return null
     }
 
-    return tagList.length === 0 ? (
-      <LabelTagsAdder addTagList={addTagList} />
-    ) : (
+    return (
       <ObjectDetectionLabeler
         tagList={tagList}
         labelList={labelList}
@@ -72,7 +60,6 @@ LabelPage.propTypes = {
   tagList: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
   labelList: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
   currentLabelIdx: PropTypes.number.isRequired,
-  addTagList: PropTypes.func.isRequired,
   setTagVisibility: PropTypes.func.isRequired,
   updateLabelContent: PropTypes.func.isRequired,
 }

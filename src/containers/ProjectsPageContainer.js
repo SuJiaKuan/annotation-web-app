@@ -11,21 +11,10 @@ class ProjectsPageContainer extends React.Component {
   static propTypes = {
     media: PropTypes.object.isRequired,
     projects: PropTypes.object.isRequired,
-    addProject: PropTypes.func.isRequired,
-  }
-
-  addProject = params => {
-    this.props.addProject(params)
   }
 
   render() {
-    return (
-      <ProjectsPage
-        mediaList={this.props.media.mediaList}
-        projectList={this.props.projects.projectList}
-        addProject={this.addProject}
-      />
-    )
+    return <ProjectsPage mediaList={this.props.media.mediaList} projectList={this.props.projects.projectList} />
   }
 }
 
