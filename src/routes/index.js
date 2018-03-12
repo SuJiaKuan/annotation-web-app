@@ -3,7 +3,13 @@ import { Router, Route, Redirect, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 
 import history from './history'
-import { ProjectsPageContainer, ProjectAdderPageContainer, MediaPageContainer, LabelPageContainer } from 'containers'
+import {
+  ProjectsPageContainer,
+  ProjectAdderPageContainer,
+  MediaPageContainer,
+  MediaAdderPageContainer,
+  LabelPageContainer,
+} from 'containers'
 import { Header, MainTabs } from 'components'
 
 const Container = styled.div`
@@ -36,6 +42,7 @@ function Routes() {
                       <Route exact path="/" render={() => <Redirect to="/projects" />} />
                       <Route path="/projects/new" component={ProjectAdderPageContainer} />
                       <Route path="/projects" component={ProjectsPageContainer} />
+                      <Route path="/media/new" component={MediaAdderPageContainer} />
                       <Route path="/media" component={MediaPageContainer} />
                     </Switch>
                   </AppContent>

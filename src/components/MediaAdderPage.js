@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 
 import isArray from 'lodash/isArray'
@@ -51,8 +50,9 @@ const StyledDropzone = styled(Dropzone)`
   transition: opacity 0.3s linear;
 `
 
-class MediaAdder extends React.Component {
+class MediaAdderPage extends React.Component {
   static propTypes = {
+    isAdding: PropTypes.bool.isRequired,
     addMedia: PropTypes.func.isRequired,
   }
 
@@ -82,14 +82,13 @@ class MediaAdder extends React.Component {
     })
   }
 
-  handleUploadBtnClick = history => {
+  handleUploadBtnClick = () => {
     this.props.addMedia({
       name: this.state.mediaName,
       description: this.state.mediaDesc,
       media: this.state.file,
+      redirect: '/media',
     })
-
-    history.push('/media')
   }
 
   handleFileBtnClick = () => {
@@ -135,12 +134,12 @@ class MediaAdder extends React.Component {
   }
 
   render() {
+    const { isAdding } = this.props
     const { mediaDesc, mediaName, file, stepIndex } = this.state
 
     const acceptTypes = reduce(ACCEPT_VIDEO_TYPES, (pre, cur) => pre + `video/${cur},`, '')
-    const UploadButton = withRouter(({ history }) => (
-      <RaisedButton label="Upload" primary={true} onClick={this.handleUploadBtnClick.bind(this, history)} />
-    ))
+    const backBtnDisabled = stepIndex === 0 || (stepIndex === 2 && isAdding)
+    const uploadBtnDisabled = isAdding
 
     let nextDisabled
 
@@ -203,15 +202,22 @@ class MediaAdder extends React.Component {
 
         <br />
         <HorizontalContainer>
-          <FlatButton label="Back" disabled={stepIndex === 0} onClick={this.handlePrevBtnClick} />
+          <FlatButton label="Back" disabled={backBtnDisabled} onClick={this.handlePrevBtnClick} />
           {stepIndex < 2 && (
             <RaisedButton label="Next" primary={true} disabled={nextDisabled} onClick={this.handleNextBtnClick} />
           )}
-          {stepIndex === 2 && <UploadButton />}
+          {stepIndex === 2 && (
+            <RaisedButton
+              label="Upload"
+              primary={true}
+              disabled={uploadBtnDisabled}
+              onClick={this.handleUploadBtnClick}
+            />
+          )}
         </HorizontalContainer>
       </VerticalContainer>
     )
   }
 }
 
-export default MediaAdder
+export default MediaAdderPage

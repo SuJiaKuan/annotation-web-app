@@ -1,6 +1,7 @@
 import uuid from 'uuid/v4'
 
 import api from 'api'
+import history from 'routes/history'
 
 import {
   ADD_MEDIA_REQUEST,
@@ -11,7 +12,7 @@ import {
   GET_MEDIA_LIST_FAIL,
 } from 'constants/ActionTypes'
 
-export function addMedia({ name, description, media }) {
+export function addMedia({ name, description, media, redirect }) {
   return dispatch => {
     const id = uuid()
     const media = {
@@ -37,6 +38,10 @@ export function addMedia({ name, description, media }) {
           type: ADD_MEDIA_SUCCESS,
           media,
         })
+
+        if (redirect) {
+          history.push(redirect)
+        }
       })
       .catch(() => {
         // TODO(Su JiaKuan): More elegant error handling.
