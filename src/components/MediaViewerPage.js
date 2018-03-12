@@ -1,10 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { withRouter } from 'react-router-dom'
 import { withState } from 'recompose'
 import styled from 'styled-components'
 
-import find from 'lodash/find'
 import map from 'lodash/map'
 import slice from 'lodash/slice'
 
@@ -12,6 +10,7 @@ import { GridList, GridTile } from 'material-ui/GridList'
 import IconButton from 'material-ui/IconButton'
 import MoreIcon from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
+import { PageLoading } from 'components'
 import { IMAGES_VIEW_UNIT } from 'constants/Media'
 
 const MoreBtnWrapper = styled.div`
@@ -21,8 +20,8 @@ const MoreBtnWrapper = styled.div`
 
 const enhance = withState('imagesViewLimit', 'increaseImagesViewLimit', IMAGES_VIEW_UNIT)
 
-function MediaViewer({ mediaList, imagesViewLimit, increaseImagesViewLimit }) {
-  const ImagesGallery = ({ media }) => {
+function MediaViewerPage({ isLoading, mediaView, imagesViewLimit, increaseImagesViewLimit }) {
+  const ImagesGallery = ({ mediaView }) => {
     const size = 48
     const iconStyle = {
       width: size,
@@ -33,7 +32,7 @@ function MediaViewer({ mediaList, imagesViewLimit, increaseImagesViewLimit }) {
       height: size * 2,
       padding: size / 2,
     }
-    const images = map(slice(media.images, 0, imagesViewLimit), image => (
+    const images = map(slice(mediaView.frames, 0, imagesViewLimit), image => (
       <GridTile key={image}>
         <img src={image} alt={image} />
       </GridTile>
@@ -41,12 +40,12 @@ function MediaViewer({ mediaList, imagesViewLimit, increaseImagesViewLimit }) {
 
     return (
       <div>
-        <h3>{media.name}</h3>
-        <p>{media.description}</p>
+        <h3>{mediaView.name}</h3>
+        <p>{mediaView.description}</p>
         <GridList cellHeight={180} cols={4}>
           {images}
         </GridList>
-        {media.images.length >= imagesViewLimit && (
+        {mediaView.frames.length >= imagesViewLimit && (
           <MoreBtnWrapper>
             <IconButton
               iconStyle={iconStyle}
@@ -61,21 +60,22 @@ function MediaViewer({ mediaList, imagesViewLimit, increaseImagesViewLimit }) {
     )
   }
 
-  const Viewer = withRouter(({ match }) => {
-    const media = find(mediaList, { id: match.params.id })
-
-    if (!media) {
-      return <h3>Media Not Found</h3>
+  const Viewer = () => {
+    if (isLoading) {
+      return <PageLoading />
+    } else if (!mediaView) {
+      return <h3>Fail to Load Media</h3>
     } else {
-      return <ImagesGallery media={media} />
+      return <ImagesGallery mediaView={mediaView} />
     }
-  })
+  }
 
   return <Viewer />
 }
 
-MediaViewer.propTypes = {
-  mediaList: PropTypes.arrayOf(PropTypes.object).isRequired,
+MediaViewerPage.propTypes = {
+  isLoading: PropTypes.bool.isRequired,
+  mediaView: PropTypes.object,
 }
 
-export default enhance(MediaViewer)
+export default enhance(MediaViewerPage)

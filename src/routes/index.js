@@ -8,6 +8,7 @@ import {
   ProjectAdderPageContainer,
   MediaPageContainer,
   MediaAdderPageContainer,
+  MediaViewerPageContainer,
   LabelPageContainer,
 } from 'containers'
 import { Header, MainTabs } from 'components'
@@ -43,6 +44,7 @@ function Routes() {
                       <Route path="/projects/new" component={ProjectAdderPageContainer} />
                       <Route path="/projects" component={ProjectsPageContainer} />
                       <Route path="/media/new" component={MediaAdderPageContainer} />
+                      <Route path="/media/:id" component={MediaViewerPageContainer} />
                       <Route path="/media" component={MediaPageContainer} />
                     </Switch>
                   </AppContent>

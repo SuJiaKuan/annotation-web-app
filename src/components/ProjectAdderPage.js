@@ -16,19 +16,9 @@ import { Step, StepContent, StepLabel, Stepper } from 'material-ui/Stepper'
 import { Table, TableBody, TableRow, TableRowColumn } from 'material-ui/Table'
 import TextField from 'material-ui/TextField'
 
-import { Link, Loading } from 'components'
+import { Link, PageLoading } from 'components'
 import { labelColor } from 'utils/styles'
 import { SUPPORTED_LABEL_TYPES, PREDEFINED_LABELS } from 'constants/Projects'
-
-const LoadingWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  > div {
-    margin-top: 200px;
-  }
-`
 
 const ButtonsContainer = styled.div`
   margin-top: 15px;
@@ -348,11 +338,7 @@ class ProjectAdder extends React.Component {
     const { isLoading, mediaList } = this.props
     return (
       <div>
-        {isLoading && (
-          <LoadingWrapper>
-            <Loading />
-          </LoadingWrapper>
-        )}
+        {isLoading && <PageLoading />}
         {!isLoading && mediaList.length === 0 && this.renderNoMediaTip()}
         {!isLoading &&
           mediaList.length > 0 && (

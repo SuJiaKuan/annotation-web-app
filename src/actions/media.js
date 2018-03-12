@@ -10,6 +10,9 @@ import {
   GET_MEDIA_LIST_REQUEST,
   GET_MEDIA_LIST_SUCCESS,
   GET_MEDIA_LIST_FAIL,
+  GET_MEDIA_REQUEST,
+  GET_MEDIA_SUCCESS,
+  // GET_MEDIA_FAIL,
 } from 'constants/ActionTypes'
 
 export function addMedia({ name, description, media, redirect }) {
@@ -49,6 +52,22 @@ export function addMedia({ name, description, media, redirect }) {
           type: ADD_MEDIA_FAIL,
         })
       })
+  }
+}
+
+export function getMedia({ match }) {
+  return dispatch => {
+    const { id } = match.params
+
+    dispatch({
+      type: GET_MEDIA_REQUEST,
+    })
+
+    // TODO(Su JiaKuan): Use id to query API.
+
+    dispatch({
+      type: GET_MEDIA_SUCCESS,
+    })
   }
 }
 
