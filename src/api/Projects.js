@@ -20,4 +20,10 @@ export default class ProjectAPI extends Base {
       url: `/projects/${id}`,
     })
   }
+
+  getProjectList() {
+    return this.apiClient.get({
+      url: '/projects',
+    })
+  }
 }

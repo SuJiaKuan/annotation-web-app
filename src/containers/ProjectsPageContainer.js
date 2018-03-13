@@ -5,21 +5,21 @@ import { createStructuredSelector, createSelector } from 'reselect'
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+
 import * as ProjectsActions from 'actions/projects'
+import connectDataFetchers from 'utils/connectDataFetchers'
 
 class ProjectsPageContainer extends React.Component {
   static propTypes = {
-    media: PropTypes.object.isRequired,
     projects: PropTypes.object.isRequired,
   }
 
   render() {
-    return <ProjectsPage projectList={this.props.projects.projectList} />
+    return <ProjectsPage {...this.props.projects} />
   }
 }
 
 const mapStateToProps = createStructuredSelector({
-  media: createSelector(state => state.media, mediaState => mediaState),
   projects: createSelector(state => state.projects, projectsState => projectsState),
 })
 
@@ -27,4 +27,6 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(ProjectsActions, dispatch)
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectsPageContainer)
+export default connect(mapStateToProps, mapDispatchToProps)(
+  connectDataFetchers(ProjectsPageContainer, ['getProjectList'])
+)

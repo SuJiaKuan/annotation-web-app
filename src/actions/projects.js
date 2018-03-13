@@ -8,6 +8,9 @@ import {
   GET_PROJECT_REQUEST,
   GET_PROJECT_SUCCESS,
   GET_PROJECT_FAIL,
+  GET_PROJECT_LIST_REQUEST,
+  GET_PROJECT_LIST_SUCCESS,
+  GET_PROJECT_LIST_FAIL,
 } from 'constants/ActionTypes'
 
 export function addProject({ name, description, mediaIds, type, labels, redirect }) {
@@ -75,6 +78,29 @@ export function getProject({ match: { params: { id } } }) {
         // TODO(Su JiaKuan): More elegant error handling.
         dispatch({
           type: GET_PROJECT_FAIL,
+        })
+      })
+  }
+}
+
+export function getProjectList() {
+  return dispatch => {
+    dispatch({
+      type: GET_PROJECT_LIST_REQUEST,
+    })
+
+    api.projects
+      .getProjectList()
+      .then(({ data }) => {
+        dispatch({
+          type: GET_PROJECT_LIST_SUCCESS,
+          projectList: data,
+        })
+      })
+      .catch(() => {
+        // TODO(Su JiaKuan): More elegant error handling.
+        dispatch({
+          type: GET_PROJECT_LIST_FAIL,
         })
       })
   }
