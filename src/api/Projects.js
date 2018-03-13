@@ -22,8 +22,9 @@ export default class ProjectAPI extends Base {
   }
 
   getProjectList() {
-    return this.apiClient.get({
-      url: '/projects',
+    return this.apiClient.post({
+      url: '/projects/query',
+      payload: {},
     })
   }
 }
