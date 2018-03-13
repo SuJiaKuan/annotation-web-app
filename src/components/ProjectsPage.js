@@ -7,7 +7,7 @@ import map from 'lodash/map'
 import ProjectIcon from 'material-ui/svg-icons/file/folder'
 import NewProjectIcon from 'material-ui/svg-icons/file/create-new-folder'
 
-import { ListNavigation, ListSummary } from 'components'
+import { ListSummary } from 'components'
 
 const DESC_LENGTH_LIMIT = 30
 
@@ -40,7 +40,6 @@ function ProjectsPage({ projectList }) {
 
   return (
     <div>
-      <ListNavigation list={projectList} rootName="projects" />
       <ProjectList />
     </div>
   )

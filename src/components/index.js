@@ -12,7 +12,6 @@ export { default as LabelPage } from './LabelPage'
 export { default as ObjectDetectionLabeler } from './ObjectDetectionLabeler'
 
 export { default as Link } from './Link'
-export { default as ListNavigation } from './ListNavigation'
 export { default as ListSummary } from './ListSummary'
 export { default as Loading } from './Loading'
 export { default as PageLoading } from './PageLoading'

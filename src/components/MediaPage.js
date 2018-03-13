@@ -7,7 +7,7 @@ import map from 'lodash/map'
 import MediaIcon from 'material-ui/svg-icons/image/collections'
 import NewMediaIcon from 'material-ui/svg-icons/image/add-to-photos'
 
-import { ListNavigation, ListSummary, PageLoading } from 'components'
+import { ListSummary, PageLoading } from 'components'
 import { MEDIA_STATUS } from 'constants/Media'
 
 function MediaPage({ isLoading, mediaList }) {
@@ -39,7 +39,6 @@ function MediaPage({ isLoading, mediaList }) {
 
   return (
     <div>
-      <ListNavigation list={mediaList} rootName="media" />
       <MediaList mediaList={mediaList} />
       {isLoading && <PageLoading />}
     </div>
