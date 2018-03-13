@@ -12,7 +12,7 @@ import {
   MediaViewerPageContainer,
   LabelPageContainer,
 } from 'containers'
-import { Header, MainTabs } from 'components'
+import { Header } from 'components'
 
 const Container = styled.div`
   display: flex;
@@ -37,7 +37,6 @@ function Routes() {
             return (
               <div>
                 <Header />
-                <MainTabs />
                 <Container>
                   <AppContent>
                     <Switch>

@@ -11,7 +11,6 @@ export { default as MediaViewerPage } from './MediaViewerPage'
 export { default as LabelPage } from './LabelPage'
 export { default as ObjectDetectionLabeler } from './ObjectDetectionLabeler'
 
-export { default as MainTabs } from './MainTabs'
 export { default as Link } from './Link'
 export { default as ListNavigation } from './ListNavigation'
 export { default as ListSummary } from './ListSummary'
