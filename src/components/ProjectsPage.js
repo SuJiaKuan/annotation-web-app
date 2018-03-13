@@ -7,11 +7,11 @@ import map from 'lodash/map'
 import ProjectIcon from 'material-ui/svg-icons/file/folder'
 import NewProjectIcon from 'material-ui/svg-icons/file/create-new-folder'
 
-import { ListSummary } from 'components'
+import { ListSummary, PageLoading } from 'components'
 
 const DESC_LENGTH_LIMIT = 30
 
-function ProjectsPage({ projectList }) {
+function ProjectsPage({ isLoading, projectList }) {
   const ProjectList = () => {
     const adderInfo = {
       key: 'new',
@@ -41,11 +41,13 @@ function ProjectsPage({ projectList }) {
   return (
     <div>
       <ProjectList />
+      {isLoading && <PageLoading />}
     </div>
   )
 }
 
 ProjectsPage.propTypes = {
+  isLoading: PropTypes.bool.isRequired,
   projectList: PropTypes.arrayOf(PropTypes.object).isRequired,
 }
 
