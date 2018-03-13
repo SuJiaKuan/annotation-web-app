@@ -1,6 +1,7 @@
 import React from 'react'
-import { withState } from 'recompose'
+import { withRouter } from 'react-router-dom'
 
+import findIndex from 'lodash/findIndex'
 import map from 'lodash/map'
 
 import AppBar from 'material-ui/AppBar'
@@ -10,20 +11,19 @@ import history from 'routes/history'
 
 const LABELS = ['projects', 'media']
 
-const enhance = withState('selectedTab', 'setSelectedTab', LABELS[0])
-
-function Header({ selectedTab, setSelectedTab }) {
+function Header() {
   const tabStyle = {
     width: '140px',
     height: '64px',
   }
 
   const switchTab = newTab => {
-    setSelectedTab(() => newTab)
     history.push(`/${newTab}`)
   }
 
-  const TabList = () => {
+  const TabList = withRouter(({ location }) => {
+    const selectedIndex = findIndex(LABELS, label => location.pathname.startsWith(`/${label}`))
+    const selectedTab = selectedIndex >= 0 ? LABELS[selectedIndex] : ''
     const tabs = map(LABELS, (label, idx) => {
       return <Tab key={label} label={label} value={label} style={tabStyle} />
     })
@@ -33,7 +33,7 @@ function Header({ selectedTab, setSelectedTab }) {
         {tabs}
       </Tabs>
     )
-  }
+  })
 
   return (
     <AppBar title="Annotation" showMenuIconButton={false}>
@@ -42,4 +42,4 @@ function Header({ selectedTab, setSelectedTab }) {
   )
 }
 
-export default enhance(Header)
+export default Header
