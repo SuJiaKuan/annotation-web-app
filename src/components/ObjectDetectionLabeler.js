@@ -511,48 +511,40 @@ class ObjectDetectionLabeler extends React.Component {
       height: imgInfo.height,
     }
 
-    const DrawerContent = () => {
-      if (!hasNextFrame) {
-        return (
-          <DrawerWrapper innerRef={drawerWrapper => (this.drawerWrapper = drawerWrapper)}>
-            <NoFrameContent>All frames all labeled :)</NoFrameContent>
-          </DrawerWrapper>
-        )
-      }
-
-      return (
-        <DrawerWrapper innerRef={drawerWrapper => (this.drawerWrapper = drawerWrapper)}>
-          {uri && (
-            <Image
-              innerRef={img => (this.img = img)}
-              src={image}
-              alt={image}
-              onLoad={this.handleImageLoad}
-              onDragStart={this.handleImageDragStart}
-            />
-          )}
-          {(!imgLoaded || isLoadingFrame) && <ImageLoading size={100} thickness={3} />}
-          {boundingBoxes}
-          {isDrawing && drawingBoundingBox}
-          {this.canDraw() && (
-            <ImageOverlay
-              style={imageOverlayStyle}
-              candraw={this.canDraw()}
-              onMouseDown={this.handleImageMouseDown}
-              onMouseMove={this.handleImageMouseMove}
-              onMouseUp={this.handleImageMouseUp}
-              onMouseLeave={this.handleImageMouseUp}
-            />
-          )}
-        </DrawerWrapper>
-      )
-    }
+    const drawerContent = !hasNextFrame ? (
+      <DrawerWrapper innerRef={drawerWrapper => (this.drawerWrapper = drawerWrapper)}>
+        <NoFrameContent>All frames all labeled :)</NoFrameContent>
+      </DrawerWrapper>
+    ) : (
+      <DrawerWrapper innerRef={drawerWrapper => (this.drawerWrapper = drawerWrapper)}>
+        {uri && (
+          <Image
+            innerRef={img => (this.img = img)}
+            src={image}
+            alt={image}
+            onLoad={this.handleImageLoad}
+            onDragStart={this.handleImageDragStart}
+          />
+        )}
+        {(!imgLoaded || isLoadingFrame) && <ImageLoading size={100} thickness={3} />}
+        {boundingBoxes}
+        {isDrawing && drawingBoundingBox}
+        {this.canDraw() && (
+          <ImageOverlay
+            style={imageOverlayStyle}
+            candraw={this.canDraw()}
+            onMouseDown={this.handleImageMouseDown}
+            onMouseMove={this.handleImageMouseMove}
+            onMouseUp={this.handleImageMouseUp}
+            onMouseLeave={this.handleImageMouseUp}
+          />
+        )}
+      </DrawerWrapper>
+    )
 
     return (
       <DrawerContainer>
-        <DrawerPaper innerRef={drawerPaper => (this.drawerPaper = drawerPaper)}>
-          <DrawerContent />
-        </DrawerPaper>
+        <DrawerPaper innerRef={drawerPaper => (this.drawerPaper = drawerPaper)}>{drawerContent}</DrawerPaper>
       </DrawerContainer>
     )
   }
