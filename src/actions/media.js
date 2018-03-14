@@ -1,6 +1,8 @@
 import api from 'api'
 import history from 'routes/history'
 
+import orderBy from 'lodash/orderBy'
+
 import {
   ADD_MEDIA_REQUEST,
   ADD_MEDIA_SUCCESS,
@@ -97,7 +99,7 @@ function getMediaListInner(dispatch, requestAction, successAction, failAction) {
     .then(({ data }) => {
       dispatch({
         type: successAction,
-        mediaList: data,
+        mediaList: orderBy(data, 'createdTime', 'desc'),
       })
     })
     .catch(() => {

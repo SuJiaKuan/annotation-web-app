@@ -60,7 +60,7 @@ function LabelPage({
   return (
     <div>
       <Toolbar>
-        <ToolbarGroup firstChild={true}>
+        <ToolbarGroup>
           <ToolbarTitle text={name} />
         </ToolbarGroup>
         <ToolbarGroup lastChild={true}>

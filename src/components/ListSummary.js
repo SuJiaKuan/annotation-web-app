@@ -4,9 +4,9 @@ import pure from 'recompose/pure'
 import styled from 'styled-components'
 
 import map from 'lodash/map'
+import merge from 'lodash/merge'
 
 import Avatar from 'material-ui/Avatar'
-import Divider from 'material-ui/Divider'
 import { List, ListItem } from 'material-ui/List'
 
 import { Link } from 'components'
@@ -19,11 +19,10 @@ function ListSummary({ summary }) {
   const listItems = map(summary, item => {
     const { key, obvious, icon, to, disabled, primaryText, secondaryText } = item
     const avatar = obvious ? <ObviousAvatar icon={icon} /> : <Avatar icon={icon} />
-    const style = !disabled
-      ? {}
-      : {
-          opacity: '0.5',
-        }
+    const baseItemStyle = {
+      borderBottom: '1px solid rgb(224, 224, 224)',
+    }
+    const style = !disabled ? baseItemStyle : merge(baseItemStyle, { opacity: '0.5' })
     const listItemInner = (
       <ListItem
         leftAvatar={avatar}
@@ -33,17 +32,7 @@ function ListSummary({ summary }) {
         style={style}
       />
     )
-    const listItemOutter = !disabled ? (
-      <Link to={to}>
-        {listItemInner}
-        <Divider />
-      </Link>
-    ) : (
-      <div>
-        {listItemInner}
-        <Divider />
-      </div>
-    )
+    const listItemOutter = !disabled ? <Link to={to}>{listItemInner}</Link> : <div>{listItemInner}</div>
 
     return <div key={key}>{listItemOutter}</div>
   })

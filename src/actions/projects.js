@@ -1,6 +1,8 @@
 import api from 'api'
 import history from 'routes/history'
 
+import orderBy from 'lodash/orderBy'
+
 import {
   ADD_PROJECT_REQUEST,
   ADD_PROJECT_SUCCESS,
@@ -94,7 +96,7 @@ export function getProjectList() {
       .then(({ data }) => {
         dispatch({
           type: GET_PROJECT_LIST_SUCCESS,
-          projectList: data,
+          projectList: orderBy(data, 'createdTime', 'desc'),
         })
       })
       .catch(() => {

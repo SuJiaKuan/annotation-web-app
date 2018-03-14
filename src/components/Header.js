@@ -36,7 +36,12 @@ function Header() {
   })
 
   return (
-    <AppBar title="Annotation" showMenuIconButton={false}>
+    <AppBar
+      title="Annotation"
+      titleStyle={{ cursor: 'pointer' }}
+      showMenuIconButton={false}
+      onTitleClick={() => history.push('/')}
+    >
       <TabList />
     </AppBar>
   )

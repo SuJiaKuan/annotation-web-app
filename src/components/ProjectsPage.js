@@ -30,7 +30,7 @@ function ProjectsPage({ isLoading, projectList }) {
         to: `/projects/${_id}`,
         icon: <ProjectIcon />,
         primaryText: name,
-        secondaryText: desc,
+        secondaryText: desc ? desc : '(No description)',
       }
     })
     const summary = concat([adderInfo], listInfo)

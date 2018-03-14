@@ -20,6 +20,7 @@ const Container = styled.div`
 `
 const AppContent = styled.div`
   width: 980px;
+  padding: 20px;
 `
 
 function Routes() {
