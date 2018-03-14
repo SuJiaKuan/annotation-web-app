@@ -12,6 +12,7 @@ import MoreIcon from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 
 import { PageLoading } from 'components'
 import { IMAGES_VIEW_UNIT } from 'constants/Media'
+import config from 'config/client-config'
 
 const MoreBtnWrapper = styled.div`
   display: flex;
@@ -32,11 +33,15 @@ function MediaViewerPage({ isLoading, mediaView, imagesViewLimit, increaseImages
       height: size * 2,
       padding: size / 2,
     }
-    const images = map(slice(mediaView.frames, 0, imagesViewLimit), image => (
-      <GridTile key={image}>
-        <img src={image} alt={image} />
-      </GridTile>
-    ))
+    const images = map(slice(mediaView.frames, 0, imagesViewLimit), image => {
+      const src = `${config.storeRoot}/${image.frameUri}`
+
+      return (
+        <GridTile key={image._id}>
+          <img src={src} alt={src} />
+        </GridTile>
+      )
+    })
 
     return (
       <div>

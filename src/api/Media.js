@@ -9,6 +9,12 @@ export default class MediaAPI extends Base {
     })
   }
 
+  getMediaFrames(id) {
+    return this.apiClient.get({
+      url: `/media/${id}/frames`,
+    })
+  }
+
   getMediaList(payload) {
     return this.apiClient.post({
       url: '/media/query',

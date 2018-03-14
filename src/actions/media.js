@@ -13,7 +13,7 @@ import {
   REFRESH_MEDIA_LIST_FAIL,
   GET_MEDIA_REQUEST,
   GET_MEDIA_SUCCESS,
-  // GET_MEDIA_FAIL,
+  GET_MEDIA_FAIL,
 } from 'constants/ActionTypes'
 
 export function addMedia({ name, description, media, redirect }) {
@@ -56,11 +56,34 @@ export function getMedia({ match }) {
       type: GET_MEDIA_REQUEST,
     })
 
-    // TODO(Su JiaKuan): Use id to query API.
+    let mediaView
 
-    dispatch({
-      type: GET_MEDIA_SUCCESS,
-    })
+    api.media
+      .getMediaList({
+        mediaIds: [id],
+      })
+      .then(({ data }) => {
+        mediaView = {
+          name: data[0].name,
+          description: data[0].description,
+        }
+
+        return api.media.getMediaFrames(id)
+      })
+      .then(({ data }) => {
+        mediaView.frames = data //map(data, ({ frameUri }) => frameUri)
+
+        dispatch({
+          type: GET_MEDIA_SUCCESS,
+          mediaView,
+        })
+      })
+      .catch(() => {
+        // TODO(Su JiaKuan): More elegant error handling.
+        dispatch({
+          type: GET_MEDIA_FAIL,
+        })
+      })
   }
 }
 
