@@ -36,12 +36,15 @@
     "lint-staged": "^4.3.0",
     "node-plop": "^0.5.5",
     "plop": "^1.7.4",
+    "pm2": "^2.10.1",
     "prettier": "^1.8.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
+    "prod-start": "pm2 start server.js --name annotation",
+    "prod-stop": "pm2 delete annotation -s &> /dev/null",
     "eject": "react-scripts eject",
     "prettier": "prettier --single-quote --print-width=120 --trailing-comma es5 --no-semi",
     "format": "npm run prettier -- --write '{,!(build|generators)/**/}*.js'",
