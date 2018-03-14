@@ -12,7 +12,6 @@ import remove from 'lodash/remove'
 import { Card, CardTitle, CardActions } from 'material-ui/Card'
 import CircularProgress from 'material-ui/CircularProgress'
 import DelIcon from 'material-ui/svg-icons/action/delete'
-import FlatButton from 'material-ui/FlatButton'
 import Menu from 'material-ui/Menu'
 import MenuItem from 'material-ui/MenuItem'
 import Paper from 'material-ui/Paper'
@@ -20,8 +19,8 @@ import RaisedButton from 'material-ui/RaisedButton'
 import VisibilityIcon from 'material-ui/svg-icons/action/visibility'
 import VisibilityOffIcon from 'material-ui/svg-icons/action/visibility-off'
 
-import tagColor from 'utils/tagColor'
-import { rgba, px } from 'utils/styles'
+import { rgba, px, labelColor } from 'utils/styles'
+import config from 'config/client-config'
 
 const ORIGIN_POINT = {
   x: 0,
@@ -30,7 +29,7 @@ const ORIGIN_POINT = {
 
 const EMPTY_BBOX = [ORIGIN_POINT, ORIGIN_POINT]
 
-const EMPTY_TAG = {
+const EMPTY_LABEL = {
   name: '',
   color: '',
 }
@@ -80,6 +79,12 @@ const DrawerWrapper = styled.div`
   }
 `
 
+const NoFrameContent = styled.h2`
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`
+
 const Image = styled.img`
   max-width: 100%;
   max-height: 100%;
@@ -110,7 +115,7 @@ const BoundingBox = ({
   top,
   width,
   height,
-  tagName,
+  labelName,
   color,
   highlight,
   showName,
@@ -146,12 +151,12 @@ const BoundingBox = ({
   return (
     <div style={style} onMouseOver={onMouseOver} onMouseLeave={onMouseLeave}>
       {showDelBtn && <DelIcon style={delIconStyle} onClick={onDelBtnClick} />}
-      {showName && <div style={nameStyle}>{tagName}</div>}
+      {showName && <div style={nameStyle}>{labelName}</div>}
     </div>
   )
 }
 
-const TagListWrapper = styled.div`
+const LabelListWrapper = styled.div`
   display: flex;
   height: calc(100% - 130px);
   overflow: auto;
@@ -159,16 +164,20 @@ const TagListWrapper = styled.div`
 
 const ToolbarActions = styled(CardActions)`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
 `
 
 class ObjectDetectionLabeler extends React.Component {
   static propTypes = {
-    tagList: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
+    isLoadingFrame: PropTypes.bool.isRequired,
+    isSavingFrame: PropTypes.bool.isRequired,
+    frame: PropTypes.object.isRequired,
+    hasNextFrame: PropTypes.bool.isRequired,
     labelList: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
-    currentLabelIdx: PropTypes.number.isRequired,
-    setTagVisibility: PropTypes.func.isRequired,
-    updateLabelContent: PropTypes.func.isRequired,
+    getFrame: PropTypes.func.isRequired,
+    updateFrame: PropTypes.func.isRequired,
+    saveFrame: PropTypes.func.isRequired,
+    setLabelVisibility: PropTypes.func.isRequired,
   }
 
   state = {
@@ -185,7 +194,7 @@ class ObjectDetectionLabeler extends React.Component {
       bbox: EMPTY_BBOX,
     },
     selectedBBoxIdx: -1,
-    selectedTag: EMPTY_TAG,
+    selectedLabel: EMPTY_LABEL,
   }
 
   componentDidMount() {
@@ -262,16 +271,16 @@ class ObjectDetectionLabeler extends React.Component {
 
   handleImageMouseUp = e => {
     if (this.canDraw() && this.state.isDrawing) {
-      const { labelList, currentLabelIdx } = this.props
-      const { drawingInfo, selectedTag } = this.state
+      const { frame } = this.props
+      const { drawingInfo, selectedLabel } = this.state
 
-      const { content } = labelList[currentLabelIdx]
-      const newContent = concat(content, {
-        tagName: selectedTag.name,
+      const { labels } = frame
+      const newLabels = concat(labels, {
+        label: selectedLabel.name,
         bbox: this.deserializeBBox(drawingInfo.bbox),
       })
 
-      this.updateLabelContent(newContent)
+      this.updateFrame(newLabels)
 
       this.setState({
         isDrawing: false,
@@ -279,7 +288,7 @@ class ObjectDetectionLabeler extends React.Component {
           fixedPoint: ORIGIN_POINT,
           bbox: EMPTY_BBOX,
         },
-        selectedTag: EMPTY_TAG,
+        selectedLabel: EMPTY_LABEL,
       })
     }
   }
@@ -301,42 +310,42 @@ class ObjectDetectionLabeler extends React.Component {
   }
 
   handleBBoxDelBtnClick = idx => {
-    const { labelList, currentLabelIdx } = this.props
+    const { labels } = this.props.frame
 
-    const { content } = labelList[currentLabelIdx]
-    const newContent = remove(content, (x, xIdx) => idx !== xIdx)
+    const newLabels = remove(labels, (x, xIdx) => idx !== xIdx)
 
-    this.updateLabelContent(newContent)
+    this.updateFrame(newLabels)
 
     this.setState({
       selectedBBoxIdx: -1,
     })
   }
 
-  handleVisibilityIconClick = (tagName, visible) => {
-    this.props.setTagVisibility({
-      tagName,
+  handleVisibilityIconClick = (labelName, visible) => {
+    this.props.setLabelVisibility({
+      labelName,
       visible,
     })
   }
 
-  handleTagClick = (tagName, color) => {
-    const selectedTag = tagName === this.state.selectedTag.name ? EMPTY_TAG : { name: tagName, color }
+  handleLabelClick = (labelName, color) => {
+    const selectedLabel = labelName === this.state.selectedLabel.name ? EMPTY_LABEL : { name: labelName, color }
 
     this.setState({
-      selectedTag,
+      selectedLabel,
     })
   }
 
-  handleSkipBtnClick = () => {
-    // TODO(Su JiaKuan)
-  }
-
   handleSaveBtnClick = () => {
-    // TODO(Su JiaKuan)
+    const { id, labels } = this.props.frame
+
+    this.props.saveFrame({
+      frameId: id,
+      labels,
+    })
   }
 
-  canDraw = () => this.state.imgLoaded && this.state.selectedTag.name
+  canDraw = () => this.state.imgLoaded && this.state.selectedLabel.name
 
   calculateImageInfo = () => {
     const imgRect = this.img.getBoundingClientRect()
@@ -375,69 +384,70 @@ class ObjectDetectionLabeler extends React.Component {
     },
   ]
 
-  updateLabelContent = content => {
-    this.props.updateLabelContent({ content })
+  updateFrame = labels => {
+    this.props.updateFrame({ labels })
   }
 
   renderToolbar() {
-    const { selectedTag } = this.state
-    const { tagList, labelList, currentLabelIdx } = this.props
+    const { selectedLabel } = this.state
+    const { isLoadingFrame, isSavingFrame, labelList, frame, hasNextFrame } = this.props
 
-    const colors = map(tagList, (tag, idx) => tagColor(idx))
-    const visibilities = map(tagList, (tag, idx) => {
-      const Icon = tag.visible ? VisibilityIcon : VisibilityOffIcon
+    const colors = map(labelList, (label, idx) => labelColor(idx))
+    const visibilities = map(labelList, (label, idx) => {
+      const Icon = label.visible ? VisibilityIcon : VisibilityOffIcon
       const color = colors[idx]
 
       return (
         <MenuItem
-          key={tag.name}
+          key={label.name}
           rightIcon={<Icon style={{ right: '20px' }} color={color} />}
-          onClick={this.handleVisibilityIconClick.bind(this, tag.name, !tag.visible)}
+          onClick={this.handleVisibilityIconClick.bind(this, label.name, !label.visible)}
         />
       )
     })
 
-    const { content } = labelList[currentLabelIdx]
-    const tags = map(tagList, (tag, idx) => {
+    const { labels } = frame
+    const labelItems = map(labelList, (label, idx) => {
       const color = colors[idx]
       const style =
-        tag.name !== selectedTag.name
+        label.name !== selectedLabel.name
           ? {}
           : {
               backgroundColor: color,
               color: '#FFF',
             }
-      const count = countBy(content, ({ tagName }) => tagName === tag.name).true
-      const text = `${tag.name} (${count ? count : 0})`
+      const count = countBy(labels, ({ label: labelName }) => labelName === label.name).true
+      const text = `${label.name} (${count ? count : 0})`
 
       return (
         <MenuItem
-          key={tag.name}
+          key={label.name}
           primaryText={text}
           style={style}
-          onClick={this.handleTagClick.bind(this, tag.name, color)}
+          onClick={this.handleLabelClick.bind(this, label.name, color)}
         />
       )
     })
 
+    const saveBtnDisabled = isLoadingFrame || !hasNextFrame || isSavingFrame
+
     return (
       <ToolbarContainer>
         <Card style={{ height: '100%' }}>
-          <CardTitle title="Select a tag below" />
-          <TagListWrapper>
+          <CardTitle title="Select a label below" />
+          <LabelListWrapper>
             <Menu style={{ width: '84px' }}>{visibilities}</Menu>
-            <Menu style={{ width: '216px' }}>{tags}</Menu>
-          </TagListWrapper>
+            <Menu style={{ width: '216px' }}>{labelItems}</Menu>
+          </LabelListWrapper>
           <ToolbarActions>
-            <FlatButton label="Skip" onClick={this.handleSkipBtnClick} />
-            <RaisedButton label="Save" primary={true} onClick={this.handleSaveBtnClick} />
+            <RaisedButton label="Save" primary={true} disabled={saveBtnDisabled} onClick={this.handleSaveBtnClick} />
           </ToolbarActions>
         </Card>
       </ToolbarContainer>
     )
   }
 
-  renderBoundingBox({ bbox, tagName, color, highlight, showName, showDelBtn, key = '', idx = -1 }) {
+  renderBoundingBox({ bbox, labelName, color, highlight, showName, showDelBtn, key = '', idx = -1 }) {
     const { imgInfo } = this.state
 
     return (
@@ -447,7 +457,7 @@ class ObjectDetectionLabeler extends React.Component {
         top={imgInfo.y + imgInfo.height * bbox[0].y}
         width={imgInfo.width * (bbox[1].x - bbox[0].x)}
         height={imgInfo.height * (bbox[1].y - bbox[0].y)}
-        tagName={tagName}
+        labelName={labelName}
         color={color}
         highlight={highlight}
         showName={showName}
@@ -460,37 +470,38 @@ class ObjectDetectionLabeler extends React.Component {
   }
 
   renderDrawer() {
-    const { imgLoaded, imgInfo, isDrawing, drawingInfo, selectedBBoxIdx, selectedTag } = this.state
-    const { currentLabelIdx, labelList, tagList } = this.props
-    const { image, content } = labelList[currentLabelIdx]
+    const { imgLoaded, imgInfo, isDrawing, drawingInfo, selectedBBoxIdx, selectedLabel } = this.state
+    const { isLoadingFrame, frame, hasNextFrame, labelList } = this.props
+    const { uri, labels } = frame
+    const image = `${config.storeRoot}/${uri}`
 
     const drawingBoundingBox = this.renderBoundingBox({
       bbox: drawingInfo.bbox,
-      tagName: selectedTag.name,
-      color: selectedTag.color,
+      labelName: selectedLabel.name,
+      color: selectedLabel.color,
       highlight: true,
       showName: false,
       showDelBtn: false,
     })
-    const boundingBoxes = map(content, ({ tagName, bbox }, idx) => {
-      const { visible } = find(tagList, { name: tagName })
+    const boundingBoxes = map(labels, ({ label: labelName, bbox }, idx) => {
+      const { visible } = find(labelList, { name: labelName })
 
       if (!visible) {
         return null
       } else {
-        const colorIdx = findIndex(tagList, { name: tagName })
-        const color = tagColor(colorIdx)
+        const colorIdx = findIndex(labelList, { name: labelName })
+        const color = labelColor(colorIdx)
         const serializedBBox = this.serializeBBox(bbox)
         const selected = idx === selectedBBoxIdx
 
         return this.renderBoundingBox({
           bbox: serializedBBox,
-          tagName,
+          labelName,
           color,
           highlight: selected,
           showName: selected,
           showDelBtn: selected,
-          key: `${tagName}${bbox}`,
+          key: `${labelName}${bbox}`,
           idx,
         })
       }
@@ -500,10 +511,18 @@ class ObjectDetectionLabeler extends React.Component {
       height: imgInfo.height,
     }
 
-    return (
-      <DrawerContainer>
-        <DrawerPaper innerRef={drawerPaper => (this.drawerPaper = drawerPaper)}>
+    const DrawerContent = () => {
+      if (!hasNextFrame) {
+        return (
           <DrawerWrapper innerRef={drawerWrapper => (this.drawerWrapper = drawerWrapper)}>
+            <NoFrameContent>All frames all labeled :)</NoFrameContent>
+          </DrawerWrapper>
+        )
+      }
+
+      return (
+        <DrawerWrapper innerRef={drawerWrapper => (this.drawerWrapper = drawerWrapper)}>
+          {uri && (
             <Image
               innerRef={img => (this.img = img)}
               src={image}
@@ -511,20 +530,28 @@ class ObjectDetectionLabeler extends React.Component {
               onLoad={this.handleImageLoad}
               onDragStart={this.handleImageDragStart}
             />
-            {!imgLoaded && <ImageLoading size={100} thickness={3} />}
-            {boundingBoxes}
-            {isDrawing && drawingBoundingBox}
-            {this.canDraw() && (
-              <ImageOverlay
-                style={imageOverlayStyle}
-                candraw={this.canDraw()}
-                onMouseDown={this.handleImageMouseDown}
-                onMouseMove={this.handleImageMouseMove}
-                onMouseUp={this.handleImageMouseUp}
-                onMouseLeave={this.handleImageMouseUp}
-              />
-            )}
-          </DrawerWrapper>
+          )}
+          {(!imgLoaded || isLoadingFrame) && <ImageLoading size={100} thickness={3} />}
+          {boundingBoxes}
+          {isDrawing && drawingBoundingBox}
+          {this.canDraw() && (
+            <ImageOverlay
+              style={imageOverlayStyle}
+              candraw={this.canDraw()}
+              onMouseDown={this.handleImageMouseDown}
+              onMouseMove={this.handleImageMouseMove}
+              onMouseUp={this.handleImageMouseUp}
+              onMouseLeave={this.handleImageMouseUp}
+            />
+          )}
+        </DrawerWrapper>
+      )
+    }
+
+    return (
+      <DrawerContainer>
+        <DrawerPaper innerRef={drawerPaper => (this.drawerPaper = drawerPaper)}>
+          <DrawerContent />
         </DrawerPaper>
       </DrawerContainer>
     )

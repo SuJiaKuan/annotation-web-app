@@ -1,66 +1,145 @@
-import findIndex from 'lodash/findIndex'
 import clone from 'lodash/clone'
+import findIndex from 'lodash/findIndex'
+import map from 'lodash/map'
 
 import {
-  ADD_TAG_LIST_REQUEST,
-  ADD_TAG_LIST_SUCCESS,
-  ADD_TAG_LIST_FAIL,
-  SET_TAG_VISIBILITY,
-  UPDATE_LABEL_CONTENT,
+  GET_PROJECT_REQUEST,
+  GET_FRAME_NO_CONTENT,
+  GET_PROJECT_SUCCESS,
+  GET_PROJECT_FAIL,
+  GET_FRAME_REQUEST,
+  GET_FRAME_SUCCESS,
+  GET_FRAME_FAIL,
+  SAVE_FRAME_REQUEST,
+  SAVE_FRAME_SUCCESS,
+  SAVE_FRAME_FAIL,
+  SET_LABEL_VISIBILITY,
+  UPDATE_FRAME,
 } from 'constants/ActionTypes'
 
 const initialState = {
-  isFetch: false,
-  id: '',
+  isLoadingProject: false,
+  isLoadingFrame: false,
+  isSavingFrame: false,
   name: '',
   type: '',
-  tagList: [],
-  labels: [],
-  currentLabelIdx: 0,
+  frame: {
+    id: '',
+    uri: '',
+    labels: [],
+  },
+  hasNextFrame: true,
+  labelList: [],
 }
 
 export default function label(state = initialState, action) {
   switch (action.type) {
-    case ADD_TAG_LIST_REQUEST: {
+    case GET_PROJECT_REQUEST: {
       return {
         ...state,
-        isFetch: true,
+        isLoadingProject: true,
       }
     }
 
-    case ADD_TAG_LIST_SUCCESS: {
-      return {
-        ...state,
-        isFetch: false,
-        tagList: action.tagList,
-      }
-    }
-
-    case ADD_TAG_LIST_FAIL: {
-      return {
-        ...state,
-        isFetch: false,
-      }
-    }
-
-    case SET_TAG_VISIBILITY: {
-      const newTagList = clone(state.tagList)
-      const tagIdx = findIndex(newTagList, { name: action.tagName })
-
-      if (tagIdx >= 0) {
-        newTagList[tagIdx].visible = action.visible
-      }
+    case GET_PROJECT_SUCCESS: {
+      const { name, labels, type } = action.projectView
+      const labelList = map(labels, label => ({
+        name: label,
+        visible: true,
+      }))
 
       return {
         ...state,
-        tagList: newTagList,
+        isLoadingProject: false,
+        name,
+        type,
+        labelList,
       }
     }
 
-    case UPDATE_LABEL_CONTENT: {
+    case GET_PROJECT_FAIL: {
+      return {
+        ...state,
+        isLoadingProject: false,
+      }
+    }
+
+    case GET_FRAME_REQUEST: {
+      return {
+        ...state,
+        isLoadingFrame: true,
+        frame: initialState.frame,
+      }
+    }
+
+    case GET_FRAME_NO_CONTENT: {
+      return {
+        ...state,
+        isLoadingFrame: false,
+        hasNextFrame: false,
+      }
+    }
+
+    case GET_FRAME_SUCCESS: {
+      const { _id, frameUri, labels } = action.frame
+
+      return {
+        ...state,
+        isLoadingFrame: false,
+        frame: {
+          id: _id,
+          uri: frameUri,
+          labels,
+        },
+      }
+    }
+
+    case GET_FRAME_FAIL: {
+      return {
+        ...state,
+        isLoadingFrame: false,
+      }
+    }
+
+    case UPDATE_FRAME: {
+      const frame = clone(state.frame)
+
+      frame.labels = action.labels
+
+      return {
+        ...state,
+        frame,
+      }
+    }
+
+    case SAVE_FRAME_REQUEST: {
+      return {
+        ...state,
+        isSavingFrame: true,
+      }
+    }
+
+    case SAVE_FRAME_SUCCESS: {
+      return {
+        ...state,
+        isSavingFrame: false,
+      }
+    }
+
+    case SAVE_FRAME_FAIL: {
+      return {
+        ...state,
+        isSavingFrame: false,
+      }
+    }
+
+    case SET_LABEL_VISIBILITY: {
       const newLabelList = clone(state.labelList)
+      const labelIdx = findIndex(newLabelList, { name: action.labelName })
 
-      newLabelList[state.currentLabelIdx].content = action.content
+      if (labelIdx >= 0) {
+        newLabelList[labelIdx].visible = action.visible
+      }
 
       return {
         ...state,
