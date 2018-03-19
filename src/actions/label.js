@@ -8,6 +8,11 @@ import {
   SAVE_FRAME_REQUEST,
   SAVE_FRAME_SUCCESS,
   SAVE_FRAME_FAIL,
+  GET_LABELED_FRAME_LIST_REQUEST,
+  GET_LABELED_FRAME_LIST_SUCCESS,
+  GET_LABELED_FRAME_LIST_FAIL,
+  GO_PREV_LABELED_FRAME,
+  GO_NEXT_LABELED_FRAME,
   SET_LABEL_VISIBILITY,
   UPDATE_FRAME,
 } from 'constants/ActionTypes'
@@ -77,6 +82,46 @@ export function updateFrame({ labels }) {
     dispatch({
       type: UPDATE_FRAME,
       labels,
+    })
+  }
+}
+
+export function getLabeledFrameList({ match: { params: { id } } }) {
+  return dispatch => {
+    dispatch({
+      type: GET_LABELED_FRAME_LIST_REQUEST,
+    })
+
+    api.label
+      .getFrameList(id, {
+        status: 'labeled',
+      })
+      .then(({ data }) => {
+        dispatch({
+          type: GET_LABELED_FRAME_LIST_SUCCESS,
+          labeledFrameList: data,
+        })
+      })
+      .catch(() => {
+        dispatch({
+          type: GET_LABELED_FRAME_LIST_FAIL,
+        })
+      })
+  }
+}
+
+export function goPrevLabeledFrame() {
+  return dispatch => {
+    dispatch({
+      type: GO_PREV_LABELED_FRAME,
+    })
+  }
+}
+
+export function goNextLabeledFrame() {
+  return dispatch => {
+    dispatch({
+      type: GO_NEXT_LABELED_FRAME,
     })
   }
 }

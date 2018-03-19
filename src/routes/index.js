@@ -28,10 +28,11 @@ function Routes() {
     <Router history={history}>
       <div>
         <Route exact path="/label/:id" component={LabelPageContainer} />
+        <Route exact path="/labeled/:id" component={LabelPageContainer} />
         <Route
           path="/"
           render={({ location }) => {
-            if (location.pathname.startsWith('/label/')) {
+            if (location.pathname.startsWith('/label')) {
               return null
             }
 

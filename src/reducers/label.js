@@ -13,6 +13,11 @@ import {
   SAVE_FRAME_REQUEST,
   SAVE_FRAME_SUCCESS,
   SAVE_FRAME_FAIL,
+  GET_LABELED_FRAME_LIST_REQUEST,
+  GET_LABELED_FRAME_LIST_SUCCESS,
+  GET_LABELED_FRAME_LIST_FAIL,
+  GO_PREV_LABELED_FRAME,
+  GO_NEXT_LABELED_FRAME,
   SET_LABEL_VISIBILITY,
   UPDATE_FRAME,
 } from 'constants/ActionTypes'
@@ -21,6 +26,7 @@ const initialState = {
   isLoadingProject: false,
   isLoadingFrame: false,
   isSavingFrame: false,
+  isLoadingLabeledFrameList: false,
   name: '',
   type: '',
   frame: {
@@ -29,6 +35,8 @@ const initialState = {
     labels: [],
   },
   hasNextFrame: true,
+  labeledFrameList: [],
+  currentLabeledFrameIdx: 0,
   labelList: [],
 }
 
@@ -130,6 +138,48 @@ export default function label(state = initialState, action) {
       return {
         ...state,
         isSavingFrame: false,
+      }
+    }
+
+    case GET_LABELED_FRAME_LIST_REQUEST: {
+      return {
+        ...state,
+        isLoadingLabeledFrameList: true,
+      }
+    }
+
+    case GET_LABELED_FRAME_LIST_SUCCESS: {
+      return {
+        ...state,
+        isLoadingLabeledFrameList: false,
+        labeledFrameList: action.labeledFrameList,
+        currentLabeledFrameIdx: 0,
+      }
+    }
+
+    case GET_LABELED_FRAME_LIST_FAIL: {
+      return {
+        ...state,
+        isLoadingLabeledFrameList: false,
+      }
+    }
+
+    case GO_PREV_LABELED_FRAME: {
+      const { currentLabeledFrameIdx } = state
+
+      return {
+        ...state,
+        currentLabeledFrameIdx: currentLabeledFrameIdx === 0 ? 0 : currentLabeledFrameIdx - 1,
+      }
+    }
+
+    case GO_NEXT_LABELED_FRAME: {
+      const { currentLabeledFrameIdx, labeledFrameList } = state
+
+      return {
+        ...state,
+        currentLabeledFrameIdx:
+          currentLabeledFrameIdx === labeledFrameList.length - 1 ? currentLabeledFrameIdx : currentLabeledFrameIdx + 1,
       }
     }
 

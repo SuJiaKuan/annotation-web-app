@@ -13,4 +13,11 @@ export default class LabelAPI extends Base {
       payload,
     })
   }
+
+  getFrameList(projectId, payload) {
+    return this.apiClient.post({
+      url: `/projects/${projectId}/frames/query`,
+      payload,
+    })
+  }
 }

@@ -12,6 +12,7 @@ import remove from 'lodash/remove'
 import { Card, CardTitle, CardActions } from 'material-ui/Card'
 import CircularProgress from 'material-ui/CircularProgress'
 import DelIcon from 'material-ui/svg-icons/action/delete'
+import FlatButton from 'material-ui/FlatButton'
 import Menu from 'material-ui/Menu'
 import MenuItem from 'material-ui/MenuItem'
 import Paper from 'material-ui/Paper'
@@ -21,6 +22,7 @@ import VisibilityOffIcon from 'material-ui/svg-icons/action/visibility-off'
 
 import { rgba, px, labelColor } from 'utils/styles'
 import config from 'config/client-config'
+import { LABEL_MODE } from 'constants/Label'
 
 const ORIGIN_POINT = {
   x: 0,
@@ -162,21 +164,26 @@ const LabelListWrapper = styled.div`
   overflow: auto;
 `
 
-const ToolbarActions = styled(CardActions)`
+const ToolbarActionsWrapper = styled(CardActions)`
   display: flex;
   justify-content: flex-end;
 `
 
 class ObjectDetectionLabeler extends React.Component {
   static propTypes = {
+    mode: PropTypes.string.isRequired,
     isLoadingFrame: PropTypes.bool.isRequired,
     isSavingFrame: PropTypes.bool.isRequired,
+    isLoadingLabeledFrameList: PropTypes.bool.isRequired,
     frame: PropTypes.object.isRequired,
     hasNextFrame: PropTypes.bool.isRequired,
+    labeledFrameList: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
+    currentLabeledFrameIdx: PropTypes.number.isRequired,
     labelList: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
-    getFrame: PropTypes.func.isRequired,
     updateFrame: PropTypes.func.isRequired,
     saveFrame: PropTypes.func.isRequired,
+    goPrevLabeledFrame: PropTypes.func.isRequired,
+    goNextLabeledFrame: PropTypes.func.isRequired,
     setLabelVisibility: PropTypes.func.isRequired,
   }
 
@@ -345,6 +352,16 @@ class ObjectDetectionLabeler extends React.Component {
     })
   }
 
+  handlePrevBtnClick = () => {
+    this.props.goPrevLabeledFrame()
+  }
+
+  handleNextBtnClick = () => {
+    this.props.goNextLabeledFrame()
+  }
+
+  isViewOnly = () => this.props.mode === LABEL_MODE.LABELED
+
   canDraw = () => this.state.imgLoaded && this.state.selectedLabel.name
 
   calculateImageInfo = () => {
@@ -384,13 +401,36 @@ class ObjectDetectionLabeler extends React.Component {
     },
   ]
 
+  getShownFrame = () => {
+    if (this.isViewOnly()) {
+      const { labeledFrameList, currentLabeledFrameIdx } = this.props
+      const { _id: id, frameUri: uri, labels } = labeledFrameList[currentLabeledFrameIdx]
+      const frame = {
+        id,
+        uri,
+        labels,
+      }
+
+      return frame
+    } else {
+      return this.props.frame
+    }
+  }
+
   updateFrame = labels => {
     this.props.updateFrame({ labels })
   }
 
   renderToolbar() {
     const { selectedLabel } = this.state
-    const { isLoadingFrame, isSavingFrame, labelList, frame, hasNextFrame } = this.props
+    const {
+      isLoadingFrame,
+      isSavingFrame,
+      labelList,
+      hasNextFrame,
+      labeledFrameList,
+      currentLabeledFrameIdx,
+    } = this.props
 
     const colors = map(labelList, (label, idx) => labelColor(idx))
     const visibilities = map(labelList, (label, idx) => {
@@ -406,7 +446,7 @@ class ObjectDetectionLabeler extends React.Component {
       )
     })
 
-    const { labels } = frame
+    const { labels } = this.getShownFrame()
     const labelItems = map(labelList, (label, idx) => {
       const color = colors[idx]
       const style =
@@ -424,24 +464,42 @@ class ObjectDetectionLabeler extends React.Component {
           key={label.name}
           primaryText={text}
           style={style}
-          onClick={this.handleLabelClick.bind(this, label.name, color)}
+          onClick={this.isViewOnly() ? null : this.handleLabelClick.bind(this, label.name, color)}
         />
       )
     })
 
-    const saveBtnDisabled = isLoadingFrame || !hasNextFrame || isSavingFrame
+    const ToolbarActions = () => {
+      if (this.isViewOnly()) {
+        const prevBtnDisabled = currentLabeledFrameIdx === 0
+        const nextBtnDisabled = currentLabeledFrameIdx === labeledFrameList.length - 1
+
+        return (
+          <ToolbarActionsWrapper>
+            <FlatButton label="Prev" secondary={true} disabled={prevBtnDisabled} onClick={this.handlePrevBtnClick} />
+            <FlatButton label="Next" secondary={true} disabled={nextBtnDisabled} onClick={this.handleNextBtnClick} />
+          </ToolbarActionsWrapper>
+        )
+      } else {
+        const saveBtnDisabled = isLoadingFrame || !hasNextFrame || isSavingFrame
+
+        return (
+          <ToolbarActionsWrapper>
+            <RaisedButton label="Save" primary={true} disabled={saveBtnDisabled} onClick={this.handleSaveBtnClick} />
+          </ToolbarActionsWrapper>
+        )
+      }
+    }
 
     return (
       <ToolbarContainer>
         <Card style={{ height: '100%' }}>
-          <CardTitle title="Select a label below" />
+          <CardTitle title={this.isViewOnly() ? 'Labels' : 'Select a label below'} />
           <LabelListWrapper>
             <Menu style={{ width: '84px' }}>{visibilities}</Menu>
             <Menu style={{ width: '216px' }}>{labelItems}</Menu>
           </LabelListWrapper>
-          <ToolbarActions>
-            <RaisedButton label="Save" primary={true} disabled={saveBtnDisabled} onClick={this.handleSaveBtnClick} />
-          </ToolbarActions>
+          <ToolbarActions />
         </Card>
       </ToolbarContainer>
     )
@@ -469,20 +527,11 @@ class ObjectDetectionLabeler extends React.Component {
     )
   }
 
-  renderDrawer() {
-    const { imgLoaded, imgInfo, isDrawing, drawingInfo, selectedBBoxIdx, selectedLabel } = this.state
-    const { isLoadingFrame, frame, hasNextFrame, labelList } = this.props
-    const { uri, labels } = frame
-    const image = `${config.storeRoot}/${uri}`
+  renderBoundingBoxes(alwaysHideDelBtn) {
+    const { selectedBBoxIdx } = this.state
+    const { labelList } = this.props
+    const { labels } = this.getShownFrame()
 
-    const drawingBoundingBox = this.renderBoundingBox({
-      bbox: drawingInfo.bbox,
-      labelName: selectedLabel.name,
-      color: selectedLabel.color,
-      highlight: true,
-      showName: false,
-      showDelBtn: false,
-    })
     const boundingBoxes = map(labels, ({ label: labelName, bbox }, idx) => {
       const { visible } = find(labelList, { name: labelName })
 
@@ -500,11 +549,46 @@ class ObjectDetectionLabeler extends React.Component {
           color,
           highlight: selected,
           showName: selected,
-          showDelBtn: selected,
+          showDelBtn: alwaysHideDelBtn ? false : selected,
           key: `${labelName}${bbox}`,
           idx,
         })
       }
+    })
+
+    return boundingBoxes
+  }
+
+  renderImage() {
+    const { uri } = this.getShownFrame()
+    const image = `${config.storeRoot}/${uri}`
+
+    if (!uri) {
+      return null
+    }
+
+    return (
+      <Image
+        innerRef={img => (this.img = img)}
+        src={image}
+        alt={image}
+        onLoad={this.handleImageLoad}
+        onDragStart={this.handleImageDragStart}
+      />
+    )
+  }
+
+  renderEditableDrawer() {
+    const { imgLoaded, imgInfo, isDrawing, drawingInfo, selectedLabel } = this.state
+    const { isLoadingFrame, hasNextFrame } = this.props
+
+    const drawingBoundingBox = this.renderBoundingBox({
+      bbox: drawingInfo.bbox,
+      labelName: selectedLabel.name,
+      color: selectedLabel.color,
+      highlight: true,
+      showName: false,
+      showDelBtn: false,
     })
     const imageOverlayStyle = {
       width: imgInfo.width,
@@ -517,17 +601,9 @@ class ObjectDetectionLabeler extends React.Component {
       </DrawerWrapper>
     ) : (
       <DrawerWrapper innerRef={drawerWrapper => (this.drawerWrapper = drawerWrapper)}>
-        {uri && (
-          <Image
-            innerRef={img => (this.img = img)}
-            src={image}
-            alt={image}
-            onLoad={this.handleImageLoad}
-            onDragStart={this.handleImageDragStart}
-          />
-        )}
+        {this.renderImage()}
         {(!imgLoaded || isLoadingFrame) && <ImageLoading size={100} thickness={3} />}
-        {boundingBoxes}
+        {this.renderBoundingBoxes(false)}
         {isDrawing && drawingBoundingBox}
         {this.canDraw() && (
           <ImageOverlay
@@ -547,6 +623,34 @@ class ObjectDetectionLabeler extends React.Component {
         <DrawerPaper innerRef={drawerPaper => (this.drawerPaper = drawerPaper)}>{drawerContent}</DrawerPaper>
       </DrawerContainer>
     )
+  }
+
+  renderViewOnlyDrawer() {
+    const { imgLoaded } = this.state
+    const { isLoadingLabeledFrameList, labeledFrameList } = this.props
+
+    const drawerContent =
+      labeledFrameList === 0 ? (
+        <DrawerWrapper innerRef={drawerWrapper => (this.drawerWrapper = drawerWrapper)}>
+          <NoFrameContent>No Labeled frame yet :)</NoFrameContent>
+        </DrawerWrapper>
+      ) : (
+        <DrawerWrapper innerRef={drawerWrapper => (this.drawerWrapper = drawerWrapper)}>
+          {this.renderImage()}
+          {(!imgLoaded || isLoadingLabeledFrameList) && <ImageLoading size={100} thickness={3} />}
+          {this.renderBoundingBoxes(true)}
+        </DrawerWrapper>
+      )
+
+    return (
+      <DrawerContainer>
+        <DrawerPaper innerRef={drawerPaper => (this.drawerPaper = drawerPaper)}>{drawerContent}</DrawerPaper>
+      </DrawerContainer>
+    )
+  }
+
+  renderDrawer() {
+    return this.isViewOnly() ? this.renderViewOnlyDrawer() : this.renderEditableDrawer()
   }
 
   render() {

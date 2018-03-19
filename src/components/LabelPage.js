@@ -20,17 +20,22 @@ const Container = styled.div`
 `
 
 function LabelPage({
+  mode,
   isLoadingProject,
   isLoadingFrame,
   isSavingFrame,
+  isLoadingLabeledFrameList,
   name,
   type,
   frame,
   hasNextFrame,
+  labeledFrameList,
+  currentLabeledFrameIdx,
   labelList,
-  getFrame,
   updateFrame,
   saveFrame,
+  goPrevLabeledFrame,
+  goNextLabeledFrame,
   setLabelVisibility,
 }) {
   const Content = () => {
@@ -43,15 +48,20 @@ function LabelPage({
 
       return (
         <ObjectDetectionLabeler
+          mode={mode}
           isLoadingFrame={isLoadingFrame}
           isSavingFrame={isSavingFrame}
+          isLoadingLabeledFrameList={isLoadingLabeledFrameList}
           labelList={labelList}
           frame={frame}
           hasNextFrame={hasNextFrame}
-          getFrame={getFrame}
-          setLabelVisibility={setLabelVisibility}
+          labeledFrameList={labeledFrameList}
+          currentLabeledFrameIdx={currentLabeledFrameIdx}
           saveFrame={saveFrame}
           updateFrame={updateFrame}
+          goPrevLabeledFrame={goPrevLabeledFrame}
+          goNextLabeledFrame={goNextLabeledFrame}
+          setLabelVisibility={setLabelVisibility}
         />
       )
     }
@@ -75,17 +85,22 @@ function LabelPage({
 }
 
 LabelPage.propTypes = {
+  mode: PropTypes.string.isRequired,
   isLoadingProject: PropTypes.bool.isRequired,
   isLoadingFrame: PropTypes.bool.isRequired,
   isSavingFrame: PropTypes.bool.isRequired,
+  isLoadingLabeledFrameList: PropTypes.bool.isRequired,
   name: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   frame: PropTypes.object.isRequired,
   hasNextFrame: PropTypes.bool.isRequired,
+  labeledFrameList: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
+  currentLabeledFrameIdx: PropTypes.number.isRequired,
   labelList: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
-  getFrame: PropTypes.func.isRequired,
   updateFrame: PropTypes.func.isRequired,
   saveFrame: PropTypes.func.isRequired,
+  goPrevLabeledFrame: PropTypes.func.isRequired,
+  goNextLabeledFrame: PropTypes.func.isRequired,
   setLabelVisibility: PropTypes.func.isRequired,
 }
 

@@ -2,15 +2,17 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { LabelPage } from 'components'
 import { createStructuredSelector, createSelector } from 'reselect'
+import Promise from 'bluebird'
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
+import map from 'lodash/map'
 import merge from 'lodash/merge'
 
 import * as LabelActions from 'actions/label'
 import * as ProjectsActions from 'actions/projects'
-import connectDataFetchers from 'utils/connectDataFetchers'
+import { LABEL_MODE } from 'constants/Label'
 
 class LabelPageContainer extends React.Component {
   static propTypes = {
@@ -19,6 +21,26 @@ class LabelPageContainer extends React.Component {
     updateFrame: PropTypes.func.isRequired,
     saveFrame: PropTypes.func.isRequired,
     setLabelVisibility: PropTypes.func.isRequired,
+  }
+
+  componentDidMount() {
+    if (this.getMode() === LABEL_MODE.NEW) {
+      // Label new Frame.
+      this.fetchData(['getProject', 'getFrame'])
+    } else {
+      // View labeled frames.
+      this.fetchData(['getProject', 'getLabeledFrameList'])
+    }
+  }
+
+  getMode() {
+    return this.props.location.pathname.startsWith('/label/') ? LABEL_MODE.NEW : LABEL_MODE.LABELED
+  }
+
+  fetchData = actionCreators => {
+    const { history, location, match } = this.props
+
+    return Promise.all(map(actionCreators, actionCreator => this.props[actionCreator]({ history, location, match })))
   }
 
   saveFrame = ({ frameId, labels }) => {
@@ -34,9 +56,11 @@ class LabelPageContainer extends React.Component {
     return (
       <LabelPage
         {...this.props.label}
-        getFrame={this.props.getFrame}
+        mode={this.getMode()}
         updateFrame={this.props.updateFrame}
         saveFrame={this.saveFrame}
+        goPrevLabeledFrame={this.props.goPrevLabeledFrame}
+        goNextLabeledFrame={this.props.goNextLabeledFrame}
         setLabelVisibility={this.props.setLabelVisibility}
       />
     )
@@ -51,6 +75,4 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(merge(ProjectsActions, LabelActions), dispatch)
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  connectDataFetchers(LabelPageContainer, ['getProject', 'getFrame'])
-)
+export default connect(mapStateToProps, mapDispatchToProps)(LabelPageContainer)

@@ -21,6 +21,12 @@ function ProjectViewerPage({ isLoading, projectView, mediaList }) {
     align-items: center;
   `
 
+  const ButtonsWrapper = styled.div`
+    > * {
+      margin: 0 10px;
+    }
+  `
+
   const OverviewItemContent = styled.div`
     padding-left: 30px;
   `
@@ -86,7 +92,10 @@ function ProjectViewerPage({ isLoading, projectView, mediaList }) {
       <div>
         <NameWrapper>
           {project.name}
-          <RaisedButton label="Start Labeling" primary={true} href={`/label/${project._id}`} />
+          <ButtonsWrapper>
+            <RaisedButton label="Start Labeling" primary={true} href={`/label/${project._id}`} />
+            <RaisedButton label="View Labeled Frames" primary={true} href={`/labeled/${project._id}`} />
+          </ButtonsWrapper>
         </NameWrapper>
         <Overview project={project} />
         <AttachedMediaList mediaList={project.mediaList} />
