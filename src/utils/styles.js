@@ -1,10 +1,6 @@
 import Color from 'color'
 import * as colors from 'material-ui/styles/colors'
 
-import map from 'lodash/map'
-import range from 'lodash/range'
-import reduce from 'lodash/reduce'
-
 const MAIN_COLORS = [
   'red',
   'indigo',
