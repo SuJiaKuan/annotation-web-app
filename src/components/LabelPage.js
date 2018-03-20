@@ -20,6 +20,7 @@ const Container = styled.div`
 `
 
 function LabelPage({
+  id,
   mode,
   isLoadingProject,
   isLoadingFrame,
@@ -74,7 +75,7 @@ function LabelPage({
           <ToolbarTitle text={name} />
         </ToolbarGroup>
         <ToolbarGroup lastChild={true}>
-          <FlatButton label="Exit" href={'/projects'} />
+          <FlatButton label="Exit" href={`/projects/${id}`} />
         </ToolbarGroup>
       </Toolbar>
       <Container>
@@ -85,6 +86,7 @@ function LabelPage({
 }
 
 LabelPage.propTypes = {
+  id: PropTypes.string.isRequired,
   mode: PropTypes.string.isRequired,
   isLoadingProject: PropTypes.bool.isRequired,
   isLoadingFrame: PropTypes.bool.isRequired,

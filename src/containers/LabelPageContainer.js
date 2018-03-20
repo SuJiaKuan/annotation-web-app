@@ -33,6 +33,10 @@ class LabelPageContainer extends React.Component {
     }
   }
 
+  getId() {
+    return this.props.match.params.id
+  }
+
   getMode() {
     return this.props.location.pathname.startsWith('/label/') ? LABEL_MODE.NEW : LABEL_MODE.LABELED
   }
@@ -56,6 +60,7 @@ class LabelPageContainer extends React.Component {
     return (
       <LabelPage
         {...this.props.label}
+        id={this.getId()}
         mode={this.getMode()}
         updateFrame={this.props.updateFrame}
         saveFrame={this.saveFrame}
