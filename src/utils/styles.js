@@ -1,34 +1,38 @@
 import Color from 'color'
 import * as colors from 'material-ui/styles/colors'
 
+import map from 'lodash/map'
+import range from 'lodash/range'
+import reduce from 'lodash/reduce'
+
 const MAIN_COLORS = [
   'red',
   'indigo',
   'teal',
   'yellow',
-  'pink',
-  'blue',
+  'purple',
+  'lime',
   'green',
   'amber',
-  'purple',
+  'pink',
   'lightBlue',
   'lightGreen',
   'deepPurple',
   'cyan',
-  'lime',
   'deepOrange',
+  'blue',
 ]
 
 const SUB_COLORS = ['A400', '800', '300', '500', '400', '900', 'A200', '500', '200', '600', '700']
 
-// Return a label color by the given label index.
-export function labelColor(idx) {
-  if (idx >= MAIN_COLORS.length * SUB_COLORS.length) {
+// Return a label color by the given number.
+export function labelColor(num) {
+  if (num >= MAIN_COLORS.length * SUB_COLORS.length) {
     return colors['grey500']
   }
 
-  const mainColor = MAIN_COLORS[idx % MAIN_COLORS.length]
-  const subColor = SUB_COLORS[parseInt(idx / MAIN_COLORS.length, 10)]
+  const mainColor = MAIN_COLORS[num % MAIN_COLORS.length]
+  const subColor = SUB_COLORS[SUB_COLORS.length - num % SUB_COLORS.length - 1]
   const color = colors[`${mainColor}${subColor}`]
 
   return color
