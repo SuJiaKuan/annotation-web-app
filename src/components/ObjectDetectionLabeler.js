@@ -404,6 +404,11 @@ class ObjectDetectionLabeler extends React.Component {
   getShownFrame = () => {
     if (this.isViewOnly()) {
       const { labeledFrameList, currentLabeledFrameIdx } = this.props
+
+      if (labeledFrameList.length === 0) {
+        return {}
+      }
+
       const { _id: id, frameUri: uri, labels } = labeledFrameList[currentLabeledFrameIdx]
       const frame = {
         id,
@@ -472,7 +477,7 @@ class ObjectDetectionLabeler extends React.Component {
     const ToolbarActions = () => {
       if (this.isViewOnly()) {
         const prevBtnDisabled = currentLabeledFrameIdx === 0
-        const nextBtnDisabled = currentLabeledFrameIdx === labeledFrameList.length - 1
+        const nextBtnDisabled = labeledFrameList.length === 0 || currentLabeledFrameIdx === labeledFrameList.length - 1
 
         return (
           <ToolbarActionsWrapper>
@@ -630,9 +635,9 @@ class ObjectDetectionLabeler extends React.Component {
     const { isLoadingLabeledFrameList, labeledFrameList } = this.props
 
     const drawerContent =
-      labeledFrameList === 0 ? (
+      labeledFrameList.length === 0 ? (
         <DrawerWrapper innerRef={drawerWrapper => (this.drawerWrapper = drawerWrapper)}>
-          <NoFrameContent>No Labeled frame yet :)</NoFrameContent>
+          <NoFrameContent>No labeled frame yet :)</NoFrameContent>
         </DrawerWrapper>
       ) : (
         <DrawerWrapper innerRef={drawerWrapper => (this.drawerWrapper = drawerWrapper)}>
